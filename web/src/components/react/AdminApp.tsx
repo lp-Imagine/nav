@@ -100,8 +100,12 @@ function SortRow({
         {subtitle ? <span>{subtitle}</span> : null}
       </div>
       <div className={styles.rowActions}>
-        <button type="button" onClick={onEdit}>编辑</button>
-        <button type="button" className={styles.danger} onClick={onDelete}>删除</button>
+        {!dragDisabled ? (
+          <>
+            <button type="button" onClick={onEdit}>编辑</button>
+            <button type="button" className={styles.danger} onClick={onDelete}>删除</button>
+          </>
+        ) : null}
       </div>
     </div>
   )
@@ -109,7 +113,7 @@ function SortRow({
 
 export default function AdminApp({ initialList, gitRepoUrl, githubClientId, baseUrl }: Props) {
   const [baseline] = useState(() => JSON.stringify(initialList))
-  const [list, setList] = useState<INavProps[]>(() => loadLocalDraft() || initialList)
+  const [list, setList] = useState<INavProps[]>(initialList)
   const [path, setPath] = useState<AdminPath>({ l1: 0 })
   const [treeQuery, setTreeQuery] = useState('')
   const [tokenInput, setTokenInput] = useState('')
@@ -131,7 +135,8 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   })
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
-  const dirty = JSON.stringify(list) !== baseline
+  const canEdit = loggedIn
+  const dirty = canEdit && JSON.stringify(list) !== baseline
   const cats = countCategories(list)
 
   const l1 = getL1(list, path.l1)
@@ -157,6 +162,8 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
           if (session.loggedIn) {
             setLoggedIn(true)
             setSessionUser(session.user || 'admin')
+            const draft = loadLocalDraft()
+            if (draft) setList(draft)
           }
         } catch {
           /* ignore */
@@ -164,6 +171,8 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
         const params = new URLSearchParams(window.location.search)
         if (params.get('login') === 'ok') {
           setLoggedIn(true)
+          const draft = loadLocalDraft()
+          if (draft) setList(draft)
           setMsg('GitHub 授权成功')
           window.history.replaceState(null, '', window.location.pathname)
         }
@@ -174,6 +183,8 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
       if (t) {
         setLoggedIn(true)
         setTokenInput(t)
+        const draft = loadLocalDraft()
+        if (draft) setList(draft)
       }
     })
   }, [])
@@ -183,10 +194,19 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
     window.setTimeout(() => setMsg(''), 3500)
   }
 
+  const requireEdit = () => {
+    if (!loggedIn) {
+      notify('请先登录后再编辑')
+      return false
+    }
+    return true
+  }
+
   const persist = useCallback((next: INavProps[]) => {
+    if (!loggedIn) return
     setList(next)
     saveLocalDraft(next)
-  }, [])
+  }, [loggedIn])
 
   const loginWithPasswordApi = async () => {
     setBusy(true)
@@ -195,6 +215,8 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
       setLoggedIn(true)
       setSessionUser('admin')
       setPasswordInput('')
+      const draft = loadLocalDraft()
+      if (draft) setList(draft)
       notify('登录成功')
     } catch (e) {
       notify((e as Error).message)
@@ -210,6 +232,8 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
       setToken(tokenInput.trim())
       setLoggedIn(true)
       setDeviceFlow(null)
+      const draft = loadLocalDraft()
+      if (draft) setList(draft)
       notify('登录成功')
     } catch (e) {
       notify((e as Error).message)
@@ -244,6 +268,8 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
         setTokenInput(res.access_token)
         setLoggedIn(true)
         setDeviceFlow(null)
+        const draft = loadLocalDraft()
+        if (draft) setList(draft)
         notify('GitHub 授权成功')
         return
       }
@@ -268,6 +294,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   }
 
   const importJson = async (file: File) => {
+    if (!requireEdit()) return
     try {
       const parsed = JSON.parse(await file.text()) as INavProps[]
       if (!Array.isArray(parsed)) throw new Error('格式错误')
@@ -322,16 +349,20 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
     setLoggedIn(false)
     setSessionUser('')
     setDeviceFlow(null)
+    clearLocalDraft()
+    setList(JSON.parse(baseline) as INavProps[])
     notify('已退出')
   }
 
   const resetLocal = () => {
+    if (!requireEdit()) return
     if (!window.confirm('放弃本地未同步修改，恢复为构建时数据？')) return
     persist(JSON.parse(baseline) as INavProps[])
     notify('已恢复初始数据')
   }
 
   const openCatEditor = (kind: EditKind, idx: number | null, preset?: { title?: string; icon?: string | null; ownVisible?: boolean }) => {
+    if (!requireEdit()) return
     setEditKind(kind)
     setEditIdx(idx)
     setCatForm({
@@ -342,12 +373,14 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   }
 
   const openSiteEditor = (idx: number | null, preset?: INavFourProp) => {
+    if (!requireEdit()) return
     setEditKind('site')
     setEditIdx(idx)
     setWebForm(preset || { name: '', desc: '', url: '', icon: '', rate: 5, urls: {} })
   }
 
   const saveCategory = () => {
+    if (!requireEdit()) return
     const title = catForm.title.trim()
     if (!title) return notify('标题不能为空')
     const next = structuredClone(list)
@@ -395,6 +428,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   }
 
   const saveSite = () => {
+    if (!requireEdit()) return
     if (!webForm.name.trim() || !webForm.url.trim()) return notify('名称和 URL 必填')
     const next = structuredClone(list)
     const three = getL3(getL2(getL1(next, path.l1), path.l2), path.l3)
@@ -411,6 +445,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   }
 
   const deleteItem = (kind: EditKind, idx: number) => {
+    if (!requireEdit()) return
     if (!window.confirm('确定删除？')) return
     const next = structuredClone(list)
     if (kind === 'l1') {
@@ -430,6 +465,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   }
 
   const onDragEnd = (event: DragEndEvent, kind: EditKind) => {
+    if (!requireEdit()) return
     const { active, over } = event
     if (!over || active.id === over.id) return
     const next = structuredClone(list)
@@ -462,6 +498,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   }
 
   const onImportBookmark = async (file: File) => {
+    if (!requireEdit()) return
     const html = await file.text()
     const result = parseBookmark(html, list)
     if (!Array.isArray(result)) {
@@ -534,7 +571,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
         <div>
           <p className={styles.kicker}>Console</p>
           <h1>导航管理</h1>
-          <p className={styles.heroSub}>本地编辑即时生效，登录后可同步到 GitHub 仓库</p>
+          <p className={styles.heroSub}>登录后可编辑分类与网站，并同步到 GitHub 仓库</p>
         </div>
         <div className={styles.heroActions}>
           <button type="button" className={styles.ghostBtn} onClick={exportJson}>导出 JSON</button>
@@ -564,21 +601,21 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
       <section className={styles.authCard}>
         <div className={styles.authHead}>
           <div>
-            <h2>{loggedIn ? (useApi ? `已登录 · ${sessionUser}` : '已连接 GitHub') : '登录以同步数据'}</h2>
+            <h2>{loggedIn ? (useApi ? `已登录 · ${sessionUser}` : '已连接 GitHub') : '登录后开始编辑'}</h2>
             <p>
               {loggedIn
                 ? useApi
                   ? '通过服务端安全同步，GitHub Token 不会暴露给浏览器'
-                  : '可直接同步到仓库，或导出 JSON 手动提交'
+                  : '可编辑数据并同步到仓库，或导出 JSON 手动提交'
                 : useApi
-                  ? '输入管理员密码或使用 GitHub 授权；未登录也可本地编辑'
-                  : '未登录也可本地编辑；同步需要 GitHub 授权'}
+                  ? '输入管理员密码或使用 GitHub 授权后即可编辑'
+                  : '使用 GitHub 授权或 Token 登录后即可编辑与同步'}
             </p>
           </div>
           {loggedIn ? (
             <span className={styles.badge}>{useApi ? '服务端会话' : '已登录'}</span>
           ) : (
-            <span className={styles.badgeMuted}>{useApi ? 'API 模式' : '本地模式'}</span>
+            <span className={styles.badgeMuted}>{useApi ? '只读浏览' : '只读浏览'}</span>
           )}
         </div>
 
@@ -722,7 +759,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
           <div className={styles.treeHead}>
             <strong>分类树</strong>
             <div className={styles.treeHeadActions}>
-              <button type="button" onClick={() => openCatEditor('l1', null)}>+ 一级</button>
+              <button type="button" disabled={!canEdit} onClick={() => openCatEditor('l1', null)}>+ 一级</button>
               <button type="button" className={styles.treeClose} onClick={() => setTreeOpen(false)} aria-label="关闭">
                 ✕
               </button>
@@ -778,6 +815,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
             </button>
             <p className={styles.mobileCrumb}>{crumbs.join(' / ') || '选择分类'}</p>
           </div>
+          {!canEdit ? <p className={styles.readOnlyHint}>当前为只读模式，登录后可新增、编辑、删除与排序</p> : null}
           <div className={styles.panelHead}>
             <div>
               <p className={styles.crumb}>{crumbs.join(' / ') || '请选择左侧分类'}</p>
@@ -787,21 +825,21 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
             </div>
             <div className={styles.panelActions}>
               {panelKind === 'site' ? (
-                <button type="button" className={styles.primary} disabled={!l3} onClick={() => openSiteEditor(null)}>
+                <button type="button" className={styles.primary} disabled={!canEdit || !l3} onClick={() => openSiteEditor(null)}>
                   新增网站
                 </button>
               ) : panelKind === 'l3' ? (
                 <>
-                  <button type="button" disabled={!l2} onClick={() => openCatEditor('l3', null)}>新增三级</button>
+                  <button type="button" disabled={!canEdit || !l2} onClick={() => openCatEditor('l3', null)}>新增三级</button>
                   {path.l2 !== undefined && l2 ? (
-                    <button type="button" onClick={() => openCatEditor('l2', path.l2!, { title: l2.title, icon: l2.icon, ownVisible: l2.ownVisible })}>编辑当前二级</button>
+                    <button type="button" disabled={!canEdit} onClick={() => openCatEditor('l2', path.l2!, { title: l2.title, icon: l2.icon, ownVisible: l2.ownVisible })}>编辑当前二级</button>
                   ) : null}
                 </>
               ) : (
                 <>
-                  <button type="button" disabled={!l1} onClick={() => openCatEditor('l2', null)}>新增二级</button>
+                  <button type="button" disabled={!canEdit || !l1} onClick={() => openCatEditor('l2', null)}>新增二级</button>
                   {path.l1 !== undefined && l1 ? (
-                    <button type="button" onClick={() => openCatEditor('l1', path.l1!, { title: l1.title, icon: l1.icon, ownVisible: l1.ownVisible })}>编辑当前一级</button>
+                    <button type="button" disabled={!canEdit} onClick={() => openCatEditor('l1', path.l1!, { title: l1.title, icon: l1.icon, ownVisible: l1.ownVisible })}>编辑当前一级</button>
                   ) : null}
                 </>
               )}
@@ -819,7 +857,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
                     subtitle={row.subtitle}
                     icon={'icon' in row ? row.icon : undefined}
                     url={'url' in row ? row.url : undefined}
-                    dragDisabled={false}
+                    dragDisabled={!canEdit}
                     onEdit={() => {
                       if (panelKind === 'site') openSiteEditor(row.idx, sites[row.idx])
                       else if (panelKind === 'l3') openCatEditor('l3', row.idx, { title: l2!.nav[row.idx].title, icon: l2!.nav[row.idx].icon, ownVisible: l2!.nav[row.idx].ownVisible })
@@ -833,7 +871,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
                 {panelRows.length === 0 ? (
                   <div className={styles.empty}>
                     <strong>当前层级暂无数据</strong>
-                    可在上方按钮新增分类或网站
+                    {canEdit ? '可在上方按钮新增分类或网站' : '登录后可新增分类或网站'}
                   </div>
                 ) : null}
               </div>

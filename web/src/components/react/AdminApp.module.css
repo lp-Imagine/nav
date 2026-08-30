@@ -606,6 +606,16 @@
   border-color: color-mix(in srgb, var(--danger) 25%, var(--line)) !important;
 }
 
+.readOnlyHint {
+  margin: 0 0 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  background: var(--mist);
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
 .empty {
   padding: 2.5rem 1rem;
   text-align: center;
