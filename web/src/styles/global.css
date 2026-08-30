@@ -1,0 +1,189 @@
+:root {
+  /* Core palette — Ink & Iris */
+  --ink: #0f172a;
+  --ink-soft: #334155;
+  --paper: #f8fafc;
+  --paper-2: #f1f5f9;
+  --mist: #e2e8f0;
+
+  --primary: #6366f1;
+  --primary-deep: #4f46e5;
+  --primary-soft: #e0e7ff;
+  --primary-glow: rgba(99, 102, 241, 0.22);
+
+  --accent: #f59e0b;
+  --accent-soft: #fef3c7;
+  --highlight: #fde68a;
+
+  --success: #22c55e;
+  --success-soft: #dcfce7;
+  --danger: #ef4444;
+  --danger-soft: #fee2e2;
+
+  --info: #3b82f6;
+  --violet: #8b5cf6;
+
+  /* Legacy aliases (components still reference these) */
+  --teal: var(--primary);
+  --teal-deep: var(--primary-deep);
+  --teal-soft: var(--primary-soft);
+  --amber: var(--accent);
+
+  --line: rgba(15, 23, 42, 0.08);
+  --line-strong: rgba(15, 23, 42, 0.14);
+  --shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+  --shadow-lg: 0 24px 56px rgba(15, 23, 42, 0.12);
+  --radius: 14px;
+
+  --font-display: 'Bricolage Grotesque', 'Segoe UI', sans-serif;
+  --font-body: 'Instrument Sans', 'Segoe UI', sans-serif;
+
+  --bg: linear-gradient(165deg, #eef2ff 0%, var(--paper) 42%, #f1f5f9 100%);
+  --surface: rgba(255, 255, 255, 0.88);
+  --surface-elevated: rgba(255, 255, 255, 0.96);
+  --text: var(--ink);
+  --muted: #64748b;
+
+  --hero-bg: #0b1020;
+  --hero-gradient: linear-gradient(165deg, #0b1020 0%, #151b33 52%, #1e1b4b 100%);
+  --hero-overlay: linear-gradient(180deg, rgba(11, 16, 32, 0.4) 0%, rgba(11, 16, 32, 0.78) 100%);
+  --hero-fade: linear-gradient(180deg, rgba(11, 16, 32, 0.35) 0%, rgba(11, 16, 32, 0.82) 72%, var(--paper) 100%);
+  --hero-glow: radial-gradient(900px 420px at 15% 0%, var(--primary-glow), transparent 60%);
+}
+
+html[data-theme='dark'] {
+  --ink: #e2e8f0;
+  --ink-soft: #94a3b8;
+  --paper: #0c101a;
+  --paper-2: #141b28;
+  --mist: #1e293b;
+
+  --primary: #818cf8;
+  --primary-deep: #6366f1;
+  --primary-soft: rgba(99, 102, 241, 0.18);
+  --primary-glow: rgba(129, 140, 248, 0.28);
+
+  --accent: #fbbf24;
+  --accent-soft: rgba(251, 191, 36, 0.14);
+  --highlight: #fcd34d;
+
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.12);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+
+  --info: #60a5fa;
+  --violet: #a78bfa;
+
+  --teal: var(--primary);
+  --teal-deep: var(--primary-deep);
+  --teal-soft: var(--primary-soft);
+  --amber: var(--accent);
+
+  --line: rgba(226, 232, 240, 0.1);
+  --line-strong: rgba(226, 232, 240, 0.16);
+  --shadow: 0 18px 44px rgba(0, 0, 0, 0.38);
+  --shadow-lg: 0 28px 64px rgba(0, 0, 0, 0.48);
+
+  --bg: radial-gradient(1100px 560px at 8% -12%, rgba(99, 102, 241, 0.18) 0%, transparent 55%),
+    linear-gradient(165deg, #070a12 0%, #0c101a 48%, #111827 100%);
+  --surface: rgba(20, 27, 40, 0.9);
+  --surface-elevated: rgba(26, 34, 50, 0.96);
+  --text: var(--ink);
+  --muted: #94a3b8;
+
+  --hero-bg: #070a12;
+  --hero-gradient: linear-gradient(165deg, #070a12 0%, #121a2e 52%, #1a1744 100%);
+  --hero-overlay: linear-gradient(180deg, rgba(7, 10, 18, 0.45) 0%, rgba(7, 10, 18, 0.82) 100%);
+  --hero-fade: linear-gradient(180deg, rgba(7, 10, 18, 0.35) 0%, rgba(7, 10, 18, 0.85) 72%, var(--paper) 100%);
+  --hero-glow: radial-gradient(900px 420px at 15% 0%, var(--primary-glow), transparent 60%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  background-attachment: fixed;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.4;
+  background-image: radial-gradient(rgba(99, 102, 241, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+html[data-theme='dark'] body::before {
+  opacity: 0.25;
+  background-image: radial-gradient(rgba(129, 140, 248, 0.12) 1px, transparent 1px);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+img {
+  display: block;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.seo-hidden {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--primary) 35%, transparent);
+  color: var(--ink);
+}
+
+html[data-theme='dark'] ::selection {
+  color: #fff;
+}

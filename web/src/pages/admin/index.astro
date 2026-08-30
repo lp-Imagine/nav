@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import AdminApp from '../../components/react/AdminApp'
+import config from '../../lib/config'
+import { websiteList } from '../../lib/data'
+
+const baseUrl = import.meta.env.BASE_URL
+---
+
+<BaseLayout title={`管理 · ${config.title}`} description="导航后台管理">
+  <AdminApp
+    client:load
+    initialList={websiteList}
+    gitRepoUrl={config.gitRepoUrl}
+    githubClientId={config.githubClientId}
+    baseUrl={baseUrl}
+  />
+</BaseLayout>

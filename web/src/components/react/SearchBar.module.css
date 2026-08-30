@@ -1,0 +1,393 @@
+.form {
+  width: min(680px, 100%);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.compact {
+  width: 100%;
+  margin-inline: 0;
+  align-items: stretch;
+  gap: 0.45rem;
+}
+
+.compact .engines {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  overflow-x: auto;
+  gap: 0.28rem;
+  padding-bottom: 0.1rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.compact .engines::-webkit-scrollbar {
+  display: none;
+}
+
+.compact .engine,
+.compact .engineActive {
+  flex-shrink: 0;
+  padding: 0.22rem 0.5rem 0.22rem 0.28rem;
+  font-size: 0.72rem;
+}
+
+.compact .field input {
+  padding: 0.65rem 0.85rem;
+  font-size: 0.9rem;
+}
+
+.compact .submit {
+  padding: 0 0.9rem;
+  font-size: 0.85rem;
+}
+
+.engines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.engine,
+.engineActive {
+  appearance: none;
+  border: 0;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.28rem 0.6rem 0.28rem 0.32rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 650;
+  white-space: nowrap;
+  transition:
+    background 0.22s ease,
+    color 0.22s ease,
+    transform 0.18s ease,
+    box-shadow 0.22s ease;
+}
+
+.engine:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+.engine:active,
+.engineActive:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.engineActive {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ink);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+.engine :global(span[class*='wrap']),
+.engineActive :global(span[class*='wrap']) {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.field {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  background: var(--surface-elevated);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(11, 16, 32, 0.22);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.field:focus-within {
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.24);
+  transform: translateY(-1px);
+}
+
+.field input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  padding: 0.9rem 1.1rem;
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.98rem;
+  min-width: 0;
+}
+
+.submit {
+  appearance: none;
+  border: 0;
+  background: var(--teal);
+  color: #fff;
+  padding: 0 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.submit:hover {
+  background: var(--teal-deep);
+}
+
+.submit:active {
+  transform: scale(0.98);
+}
+
+html[data-theme='dark'] .field {
+  background: var(--surface-elevated);
+}
+
+html[data-theme='dark'] .field input {
+  color: var(--ink);
+}
+
+.compact:not(.hero) .engine,
+.compact:not(.hero) .engineActive {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.compact:not(.hero) .engineActive {
+  background: var(--teal-soft);
+  color: var(--teal-deep);
+}
+
+.compact .field {
+  box-shadow: var(--shadow);
+}
+
+.compact .field:focus-within {
+  transform: none;
+}
+
+/* Hero 顶栏（Sim 桌面 + App 移动） */
+.hero {
+  gap: 0.65rem;
+}
+
+.hero:not(.compact) {
+  width: 100%;
+  gap: 0.7rem;
+}
+
+.hero:not(.compact) .enginesTray {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.hero:not(.compact) .engines {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 0.28rem;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0.32rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  scrollbar-width: none;
+}
+
+.hero:not(.compact) .engines::-webkit-scrollbar {
+  display: none;
+}
+
+.hero:not(.compact) .engine,
+.hero:not(.compact) .engineActive {
+  height: 2.1rem;
+  padding: 0 0.72rem 0 0.32rem;
+  gap: 0.4rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.78rem;
+}
+
+.hero:not(.compact) .engine:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: none;
+}
+
+.hero:not(.compact) .engineActive {
+  background: #fff;
+  color: var(--ink);
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.hero:not(.compact) .field {
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.hero:not(.compact) .field:focus-within {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+  transform: none;
+}
+
+.hero:not(.compact) .field input {
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+}
+
+.hero:not(.compact) .field input::placeholder {
+  color: color-mix(in srgb, var(--muted) 80%, transparent);
+}
+
+.hero.compact {
+  gap: 0.5rem;
+}
+
+.hero .enginesFade {
+  position: relative;
+  margin-inline: -0.25rem;
+  padding-inline: 0.25rem;
+}
+
+.hero .enginesFade::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2rem;
+  pointer-events: none;
+  background: linear-gradient(to left, rgba(8, 10, 22, 0.95), transparent);
+}
+
+.hero.compact .engines {
+  gap: 0.35rem;
+  padding-right: 0.75rem;
+}
+
+.hero.compact .engine,
+.hero.compact .engineActive {
+  height: 2.05rem;
+  padding: 0 0.62rem 0 0.28rem;
+  gap: 0.38rem;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+
+.hero.compact .engineActive {
+  background: #fff;
+  color: var(--ink);
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+.hero .engineLabel {
+  line-height: 1;
+}
+
+.engineSlot,
+.engineSlotActive {
+  border: 0 !important;
+  flex-shrink: 0;
+}
+
+.engineSlot {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.engineSlotActive {
+  background: rgba(15, 23, 42, 0.07) !important;
+}
+
+.hero.compact .field {
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.hero.compact .field:focus-within {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18);
+}
+
+.hero.compact .field input {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.88rem;
+}
+
+.hero.compact .field input::placeholder {
+  color: color-mix(in srgb, var(--muted) 85%, transparent);
+}
+
+.hero.compact .submit {
+  padding: 0 0.95rem;
+  font-size: 0.82rem;
+  border-radius: 0 999px 999px 0;
+}
+
+/* Hero entrance — engines stagger + field rise */
+.animateIn .engine,
+.animateIn .engineActive {
+  opacity: 0;
+  animation: pillIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animateIn .field {
+  opacity: 0;
+  animation: fieldIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes pillIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fieldIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animateIn .engine,
+  .animateIn .engineActive,
+  .animateIn .field {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .engine,
+  .engineActive,
+  .field,
+  .submit {
+    transition: none !important;
+  }
+}

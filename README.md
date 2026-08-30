@@ -1,103 +1,136 @@
+纯静态网址导航，基于 **Astro + React 岛屿** 重构。数据仍在仓库 `data/`，后台可通过 **服务端 API** 安全同步到 GitHub。
 
-<p align="center">
-  <b>网址导航</b>
-  <p align="center">一个纯静态、支持SEO、在线编辑的强大导航网站，希望您会喜欢</p>
-  <p align="center">内置收录多达 800+ 优质网站， 助您工作、学习和生活</p>
-</p>
-
-<br />
-<br />
-
-## 预览
-**主题**
-
-- [Sim 在线预览](https://imagine-nav.vercel.app/#/sim)
-- [Light 在线预览](https://imagine-nav.vercel.app/#/light)
-- [Side 在线预览](https://imagine-nav.vercel.app/#/side)
-- [App 在线预览](https://imagine-nav.vercel.app/#/app)
+在线预览（部署后）：GitHub Pages 或自建域名。
 
 ## 特性
-`导航站` 的理念就是做一款无需依赖后端服务既简单又方便，没有繁杂的配置和数据库等配置概念, 做到开箱即用。
 
-- 🍰 内置 `800+` 实用网站。
-- 🍰 支持 SEO。
-- 🍰 完全纯静态, 提供自动化部署功能。
-- 🍰 三叉树分类、结构清晰、分类清晰。
-- 🍰 支持一个网站关联多个网址
-- 🍰 颜值与简约并存，不再是杀马特时代。
-- 🍰 完全开源，轻松定制化。
-- 🍰 支持多种浏览模式，创新。
-- 🍰 支持足迹记忆。
-- 🍰 支持移动端浏览。
-- 🍰 支持搜索查询。
-- 🍰 支持自定义引擎搜索。
-- 🍰 多款主题切换。
-- 🍰 支持暗黑模式。
-- 🍰 支持后台管理, 无需部署。
-- 🍰 支持从Chrome书签导入
+- 纯静态 SSG，可托管到 GitHub Pages / Nginx / Docker
+- 保留原有 `data/db.json` 等数据结构（约 800+ 站点）
+- Sim 桌面主题 + App 移动主题 + Admin 后台
+- 站内 / 多引擎搜索、深浅色切换
+- 后台：分类/网站 CRUD、拖拽排序、书签导入
+- **可选 API 后端**：密码登录 / GitHub OAuth，Token 不暴露给浏览器
 
+## 本地开发
 
-## 部署
-#### 方式一(gh-pages免费)
-1、Fork 当前项目。
+需要 **Node.js ≥ 22.12**。
 
-2、[https://github.com/settings/tokens](https://github.com/settings/tokens) 申请 token, 勾选相应的权限, 如果不懂就全部选中，复制并保存Token。
+### 仅前台（无后端）
 
-3、https://github.com/用户名/nav/settings/secrets/actions/new  添加申请的token， name填写 `TOKEN` 大写。
-
-4、打开 https://github.com/用户名/nav/actions 点击 `绿色按钮`
-
-5、务必修改项目配置文件 [nav.config.ts](nav.config.ts)
-
-6、5分钟后打开 https://用户名.github.io/nav 就能看到一个非常强大的导航网站了。
-
-### 推荐方式二(Vercel免费)
-和方式一的步骤一样，除了第4步不用。
-
-具体使用跟着步骤走即可 [https://github.com/apps/vercel](https://github.com/apps/vercel)
-
-
-注：如果想部署到自己的域名，那么以上教程同样适合，因为它提供了自动化部署， 之后可以通过 `CNAME` 或 `反向代理` 实现：
-
-```conf
-# nginx
-
-server {
-    listen       80;
-    server_name  www.nav3.cn nav3.cn;
-
-    location / {
-        proxy_pass https://username.github.io/nav/;
-    }
-}
+```bash
+cd web && npm install && npm run dev
 ```
 
-## 书签导入
-支持从 Chrome 书签导入（WebKit内核应该都是支持的~），会自动检测满足三级分类的导航，其他一律设为未分类：
+### 前台 + API 后端（推荐）
 
-![](https://raw.githubusercontent.com/xjh22222228/public/gh-pages/nav/import.png)
+```bash
+# 1. 配置 server/.env（复制 server/.env.example）
+cp server/.env.example server/.env
+# 填写 ADMIN_PASSWORD、GITHUB_TOKEN、SESSION_SECRET
 
-浏览器打开 [chrome://bookmarks/](chrome://bookmarks/) 导出书签得到 html 文件, 接着从导航网站后台导入即可。
+# 2. 安装依赖
+cd server && npm install && cd ../web && npm install
 
-## 升级
-在升级之前请备份根目录下的 `data` 文件夹和 `nav.config.ts`, 升级完后替换即可。
-
-点击右上角 `Watch` 按钮第一时间跟踪版本升级。
-
-## 开发构建
-``` bash
-# 下载
-git clone --depth=1 https://github.com/xjh22222228/nav.git
-
-cd nav
-
-# 安装依赖
-yarn
-
-# 启动
-yarn start
-
-# 打包
-yarn build
+# 3. 同时启动
+cd .. && npm run dev:all
 ```
 
+或在仓库根目录：
+
+```bash
+npm run dev:all
+```
+
+常用地址：
+
+- http://127.0.0.1:4321/sim/
+- http://127.0.0.1:4321/app/
+- http://127.0.0.1:4321/admin/
+- http://127.0.0.1:8787/api/health（API 健康检查）
+
+## 配置
+
+站点配置：[`web/src/lib/config.ts`](web/src/lib/config.ts)
+
+| 字段 | 说明 |
+|------|------|
+| `gitRepoUrl` | GitHub 仓库地址 |
+| `branch` | 默认 `main` |
+| `githubClientId` | 可选，纯前端 OAuth 设备码登录 |
+| `title` / `description` / `keywords` | SEO 与品牌文案 |
+| `simThemeConfig` | Sim 主题海报与描述 |
+| `basePath` | 文档用；实际 `base` 由 `PUBLIC_BASE` 控制 |
+
+API 配置：[`server/.env.example`](server/.env.example)
+
+| 变量 | 说明 |
+|------|------|
+| `SESSION_SECRET` | 会话签名密钥（必填） |
+| `ADMIN_PASSWORD` | 管理员密码登录 |
+| `GITHUB_TOKEN` | 服务端持有的 PAT，浏览器不可见 |
+| `GITHUB_CLIENT_ID/SECRET` | 可选 GitHub OAuth |
+| `OAUTH_CALLBACK_URL` | OAuth 回调，生产需改为公网 URL |
+
+数据文件：
+
+- `data/db.json` — 导航主数据
+- `data/search.json` — 搜索引擎
+- `data/tag.json` — 标签
+
+## 后台登录方案
+
+| 模式 | 适用场景 | 说明 |
+|------|----------|------|
+| **服务端 API（推荐）** | 自建 / Docker | 密码或 GitHub OAuth 登录，同步经 `/api/db` 代理 |
+| **直连 GitHub Token** | 仅 GitHub Pages | 无后端时降级，Token 存 localStorage |
+| **导出 JSON** | 任意 | 本地编辑后手动 git commit |
+
+### API 模式流程
+
+1. 部署 `server/` 并配置 `.env`
+2. Nginx 将 `/api/` 反代到 Node（见 `deploy/nginx.conf.example`）
+3. 打开 `/admin/`，输入管理员密码登录
+4. 编辑后点「同步到 GitHub」，CI 自动构建部署
+
+## 部署：GitHub Pages
+
+GitHub Pages **仅托管静态文件**，无法运行 API。可选：
+
+- Pages 托管前台 + 另部署 API（VPS / Docker / Cloudflare Workers）
+- 或继续使用浏览器 Token 直连模式
+
+1. 仓库 Settings → Pages → Source 选 **GitHub Actions**
+2. 推送 `main` 触发 [`.github/workflows/pages.yml`](.github/workflows/pages.yml)
+3. 构建使用 `PUBLIC_BASE=/nav/`
+
+## 部署：Docker（静态 + API 一体）
+
+```bash
+docker build -f deploy/Dockerfile -t penn-nav .
+docker run --rm -p 8080:80 \
+  -e SESSION_SECRET=your-secret \
+  -e ADMIN_PASSWORD=your-password \
+  -e GITHUB_TOKEN=ghp_xxx \
+  penn-nav
+```
+
+访问 http://localhost:8080/admin/ ，密码登录后同步。
+
+## 部署：自建服务器
+
+```bash
+cd web && PUBLIC_BASE=/ npm run build
+cd ../server && npm ci && npm run build
+# 静态产物 → /var/www/nav
+# API: node server/dist/index.js（可用 systemd/pm2 守护）
+```
+
+Nginx 示例：[`deploy/nginx.conf.example`](deploy/nginx.conf.example)
+
+## 从旧 Angular 版升级
+
+本仓库已切换到 `web/` 应用。请继续只维护 `data/` 与 `web/src/lib/config.ts`。
+
+## 许可
+
+见 [LICENSE](LICENSE)。

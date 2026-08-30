@@ -1,0 +1,65 @@
+---
+import '../styles/global.css'
+import config from '../lib/config'
+import { totalWeb, websiteList } from '../lib/data'
+import ThemeInit from '../components/react/ThemeInit'
+
+interface Props {
+  title?: string
+  description?: string
+}
+
+const { title = config.title, description = config.description } = Astro.props
+const total = totalWeb()
+const fonts =
+  'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap'
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={config.keywords} />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href={fonts} rel="stylesheet" />
+    <title>{title}</title>
+    {
+      config.baiduStatisticsUrl && (
+        <script is:inline define:vars={{ src: config.baiduStatisticsUrl }}>
+          var _hmt = _hmt || []
+          ;(function () {
+            var hm = document.createElement('script')
+            hm.async = true
+            hm.src = src
+            var s = document.getElementsByTagName('script')[0]
+            s.parentNode.insertBefore(hm, s)
+          })()
+        </script>
+      )
+    }
+  </head>
+  <body>
+    <ThemeInit client:load />
+    <slot />
+    <div class="seo-hidden" aria-hidden="true">
+      <h1>{config.title}</h1>
+      <p>{config.description} · 共收录 {total} 个网站</p>
+      {
+        websiteList.flatMap((one) =>
+          (one.nav || []).flatMap((two) =>
+            (two.nav || []).flatMap((three) =>
+              (three.nav || []).map((site) => (
+                <a href={site.url}>{site.name}</a>
+              )),
+            ),
+          ),
+        )
+      }
+    </div>
+  </body>
+</html>

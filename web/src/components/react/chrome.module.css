@@ -1,0 +1,57 @@
+.iconBtn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.iconBtn:hover {
+  transform: translateY(-1px);
+  background: var(--teal-soft);
+}
+
+.glyph {
+  display: block;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.dock {
+  position: fixed;
+  right: 1rem;
+  bottom: 1.25rem;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dock a,
+.dock button {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text);
+  backdrop-filter: blur(10px);
+}
+
+.dock a:hover,
+.dock button:hover {
+  background: var(--teal-soft);
+  color: var(--teal-deep);
+}

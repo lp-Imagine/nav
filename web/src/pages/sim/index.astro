@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import SimView from '../../components/react/SimView'
+import config from '../../lib/config'
+import { websiteList, searchEngines } from '../../lib/data'
+
+const baseUrl = import.meta.env.BASE_URL
+---
+
+<BaseLayout title={config.title} description={config.description}>
+  <SimView
+    client:load
+    websiteList={websiteList}
+    searchEngines={searchEngines}
+    title={config.title}
+    descriptionHtml={config.simThemeConfig.description}
+    posterUrl={config.simThemeConfig.posterImageUrls[0]}
+    footerHtml={config.footerContent || ''}
+    gitRepoUrl={config.gitRepoUrl}
+    showGithub={config.showGithub}
+    baseUrl={baseUrl}
+  />
+</BaseLayout>

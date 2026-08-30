@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import AppView from '../../components/react/AppView'
+import config from '../../lib/config'
+import { websiteList, searchEngines } from '../../lib/data'
+
+const baseUrl = import.meta.env.BASE_URL
+---
+
+<BaseLayout title={`${config.title} · App`} description={config.description}>
+  <AppView
+    client:load
+    websiteList={websiteList}
+    searchEngines={searchEngines}
+    title={config.title}
+    baseUrl={baseUrl}
+  />
+</BaseLayout>

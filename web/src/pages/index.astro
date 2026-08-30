@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import config from '../lib/config'
+
+const base = import.meta.env.BASE_URL
+---
+
+<BaseLayout title={`跳转 · ${config.title}`}>
+  <main style="min-height:70vh;display:grid;place-items:center;padding:2rem;text-align:center;">
+    <div>
+      <h1 style="font-family:var(--font-display);margin:0 0 .5rem;">正在进入导航</h1>
+      <p style="color:var(--muted);margin:0 0 1rem;">若未自动跳转，请点击下方链接。</p>
+      <a href={`${base}sim/`} style="color:var(--teal);font-weight:700;">打开 Sim 主题</a>
+    </div>
+  </main>
+  <script is:inline define:vars={{ base }}>
+    ;(function () {
+      var hash = window.location.hash || ''
+      var map = {
+        '#/sim': 'sim/',
+        '#/app': 'app/',
+        '#/admin': 'admin/',
+        '#/light': 'sim/',
+        '#/side': 'sim/',
+        '#/shortcut': 'sim/',
+      }
+      var path = 'sim/'
+      Object.keys(map).forEach(function (k) {
+        if (hash.indexOf(k) === 0) path = map[k]
+      })
+      var q = ''
+      var qi = hash.indexOf('?')
+      if (qi >= 0) q = hash.slice(qi)
+      window.location.replace(base + path + q)
+    })()
+  </script>
+</BaseLayout>

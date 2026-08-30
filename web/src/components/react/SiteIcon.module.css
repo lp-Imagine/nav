@@ -1,0 +1,69 @@
+.wrap,
+.fallback {
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--icon-bg, var(--mist));
+  border: 1px solid var(--line);
+}
+
+.sm {
+  width: 32px;
+  height: 32px;
+}
+
+.xs {
+  width: 22px;
+  height: 22px;
+}
+
+.xs.wrap {
+  padding: 3px;
+  border-radius: 6px;
+}
+
+.xs.fallback {
+  font-size: 0.65rem;
+  border-radius: 6px;
+}
+
+.md {
+  width: 40px;
+  height: 40px;
+}
+
+.lg {
+  width: 48px;
+  height: 48px;
+}
+
+.wrap {
+  display: grid;
+  place-items: center;
+  padding: 5px;
+}
+
+.wrap img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  display: block;
+}
+
+.fallback {
+  display: grid;
+  place-items: center;
+  color: var(--teal-deep);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.sm.fallback {
+  font-size: 0.8rem;
+}
+
+.lg.fallback {
+  font-size: 1.1rem;
+}

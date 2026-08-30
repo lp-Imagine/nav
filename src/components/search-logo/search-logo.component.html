@@ -1,7 +1,0 @@
-<img [src]="url" class="icon dark-border-color" *ngIf="url && !hasError; else noSrc"
-  [ngStyle]="{ width: size + 'px', height: size + 'px' }" (error)="onError($event)" draggable="false" />
-<ng-template #noSrc>
-    <div class="circle" [ngStyle]="{ 'background-color': colour, 'width': size + 'px', 'height': size + 'px' }">
-      <span>{{ name ? name[0] : '' }}</span>
-    </div>
-</ng-template>
