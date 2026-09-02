@@ -7,8 +7,8 @@ const config: IConfig = {
   showGithub: true,
   homeUrl: 'https://imagine-nav.vercel.app',
   title: 'Penn的导航小站',
-  description: 'Penn的导航小站',
-  keywords: '导航,前端资源,社区站点,设计师,实用工具,学习资源,运营,网络安全,node.js',
+  description: '收录 AI 工具、前端工程、开源生态与常用效率站点的个人导航',
+  keywords: '导航,AI工具,ChatGPT,DeepSeek,Cursor,前端资源,Vite,社区站点,设计师,实用工具,学习资源,Python,网络安全',
   theme: 'Sim',
   basePath: '/',
   footerContent: `
@@ -22,7 +22,7 @@ const config: IConfig = {
     posterImageUrls: [
       'https://cdn.jsdelivr.net/gh/lp-Imagine/lp-Imagine@main/images/6.jpg',
     ],
-    description: '这里共收录多达 <b>\${total}</b> 个优质网站',
+    description: 'AI、前端与工程效率一站收齐，目前收录 <b>${total}</b> 个站点',
   },
 }
 

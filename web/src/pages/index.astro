@@ -10,27 +10,19 @@ const base = import.meta.env.BASE_URL
     <div>
       <h1 style="font-family:var(--font-display);margin:0 0 .5rem;">正在进入导航</h1>
       <p style="color:var(--muted);margin:0 0 1rem;">若未自动跳转，请点击下方链接。</p>
-      <a href={`${base}sim/`} style="color:var(--teal);font-weight:700;">打开 Sim 主题</a>
+      <a id="nav-entry" href={`${base}sim/`} style="color:var(--teal);font-weight:700;">打开导航</a>
     </div>
   </main>
   <script is:inline define:vars={{ base }}>
     ;(function () {
       var hash = window.location.hash || ''
-      var map = {
-        '#/sim': 'sim/',
-        '#/app': 'app/',
-        '#/admin': 'admin/',
-        '#/light': 'sim/',
-        '#/side': 'sim/',
-        '#/shortcut': 'sim/',
-      }
-      var path = 'sim/'
-      Object.keys(map).forEach(function (k) {
-        if (hash.indexOf(k) === 0) path = map[k]
-      })
+      var path = window.matchMedia('(max-width: 960px)').matches ? 'app/' : 'sim/'
+      if (hash.indexOf('#/admin') === 0) path = 'admin/'
       var q = ''
       var qi = hash.indexOf('?')
       if (qi >= 0) q = hash.slice(qi)
+      var link = document.getElementById('nav-entry')
+      if (link) link.href = base + path
       window.location.replace(base + path + q)
     })()
   </script>

@@ -28,8 +28,8 @@
   display: none;
 }
 
-.compact .engine,
-.compact .engineActive {
+.compact:not(.app) .engine,
+.compact:not(.app) .engineActive {
   flex-shrink: 0;
   padding: 0.22rem 0.5rem 0.22rem 0.28rem;
   font-size: 0.72rem;
@@ -43,6 +43,144 @@
 .compact .submit {
   padding: 0 0.9rem;
   font-size: 0.85rem;
+}
+
+/* App 移动版搜索 */
+.app {
+  gap: 0.65rem;
+}
+
+.appEngineDock {
+  position: relative;
+}
+
+.appEngineDock::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1.5rem;
+  pointer-events: none;
+  background: linear-gradient(to left, var(--surface-elevated), transparent);
+}
+
+.app .engines {
+  flex-wrap: nowrap;
+  gap: 0.45rem;
+  padding: 0.15rem 1.25rem 0.15rem 0.15rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.app .engines::-webkit-scrollbar {
+  display: none;
+}
+
+.app .engine,
+.app .engineActive {
+  flex-shrink: 0;
+  width: 2.45rem;
+  height: 2.45rem;
+  padding: 0 !important;
+  border-radius: 50%;
+  border: 2px solid transparent !important;
+  background: color-mix(in srgb, var(--mist) 88%, transparent) !important;
+  display: inline-grid;
+  place-items: center;
+  color: var(--text);
+  box-shadow: none;
+  font-size: inherit !important;
+}
+
+.app .engine:active {
+  transform: scale(0.94);
+}
+
+.app .engineActive {
+  background: var(--surface-elevated) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.appIcon,
+.appIconActive {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.appIconFallback {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--primary-deep);
+}
+
+.appEngineCaption {
+  margin: 0.45rem 0 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+}
+
+.appEngineCaption strong {
+  color: var(--primary-deep);
+  font-weight: 800;
+}
+
+.app .field {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mist) 65%, var(--surface-elevated));
+  border: 1px solid var(--line);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.app .field:focus-within {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--line));
+  box-shadow: 0 0 0 3px var(--primary-glow);
+  transform: none;
+  background: var(--surface-elevated);
+}
+
+.searchGlyph {
+  display: grid;
+  place-items: center;
+  padding-left: 0.85rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.searchGlyph svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.app .field input {
+  padding: 0.72rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.app .submit {
+  width: 2.65rem;
+  margin: 0.22rem;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--primary);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.app .submit svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.app .submit:active {
+  background: var(--primary-deep);
+  transform: scale(0.94);
 }
 
 .engines {
@@ -153,23 +291,23 @@ html[data-theme='dark'] .field input {
   color: var(--ink);
 }
 
-.compact:not(.hero) .engine,
-.compact:not(.hero) .engineActive {
+.compact:not(.hero):not(.app) .engine,
+.compact:not(.hero):not(.app) .engineActive {
   color: var(--text);
   background: var(--surface);
   border: 1px solid var(--line);
 }
 
-.compact:not(.hero) .engineActive {
+.compact:not(.hero):not(.app) .engineActive {
   background: var(--teal-soft);
   color: var(--teal-deep);
 }
 
-.compact .field {
+.compact:not(.app) .field {
   box-shadow: var(--shadow);
 }
 
-.compact .field:focus-within {
+.compact:not(.app) .field:focus-within {
   transform: none;
 }
 

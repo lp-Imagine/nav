@@ -9,7 +9,7 @@ const baseUrl = import.meta.env.BASE_URL
 
 <BaseLayout title={`管理 · ${config.title}`} description="导航后台管理">
   <AdminApp
-    client:load
+    client:only="react"
     initialList={websiteList}
     gitRepoUrl={config.gitRepoUrl}
     githubClientId={config.githubClientId}

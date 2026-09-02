@@ -11,6 +11,15 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [react()],
   vite: {
+    optimizeDeps: {
+      include: [
+        '@dnd-kit/core',
+        '@dnd-kit/sortable',
+        '@dnd-kit/utilities',
+        'react',
+        'react-dom',
+      ],
+    },
     server: {
       fs: {
         allow: ['..'],

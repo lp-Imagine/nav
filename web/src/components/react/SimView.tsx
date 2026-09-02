@@ -3,6 +3,7 @@ import type { INavProps, INavThreeProp, ISearchEngineProps } from '../../lib/typ
 import { fuzzySearch, matchCurrentList, totalWeb, visibleNav } from '../../lib/data'
 import { isLoggedIn } from '../../lib/github'
 import { useInView, useReducedMotion, useScrollY } from '../../lib/motion'
+import { useViewportRedirect } from '../../lib/viewport'
 import SearchBar from './SearchBar'
 import SiteIcon from './SiteIcon'
 import ThemeToggle from './ThemeToggle'
@@ -111,6 +112,8 @@ export default function SimView(props: Props) {
   const reducedMotion = useReducedMotion()
   const scrolled = useScrollY(120)
 
+  useViewportRedirect('sim', baseUrl)
+
   useEffect(() => {
     setLogin(isLoggedIn())
     const params = new URLSearchParams(window.location.search)
@@ -120,11 +123,7 @@ export default function SimView(props: Props) {
     if (!Number.isNaN(p)) setPage(p)
     if (!Number.isNaN(i)) setId(i)
     if (q) setQuery(q)
-
-    if ('ontouchstart' in window && !window.location.pathname.includes('/app')) {
-      window.location.replace(`${baseUrl}app/${window.location.search}`)
-    }
-  }, [baseUrl])
+  }, [])
 
   const syncUrl = (nextPage: number, nextId: number, q?: string) => {
     const params = new URLSearchParams()
@@ -279,7 +278,6 @@ export default function SimView(props: Props) {
       <footer className={styles.footer} dangerouslySetInnerHTML={{ __html: footer }} />
 
       <div className={`${styles.dock} ${scrolled ? styles.dockVisible : ''}`}>
-        <a href={`${baseUrl}app/`} title="移动版">App</a>
         <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} title="回到顶部">
           ↑
         </button>

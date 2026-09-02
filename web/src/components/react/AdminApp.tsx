@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import {
   DndContext,
   closestCenter,
@@ -61,6 +62,22 @@ interface Props {
 
 type EditKind = 'l1' | 'l2' | 'l3' | 'site' | null
 
+function ExportIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path d="M12 4v10M8 10l4 4 4-4M5 20h14" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function ArrowLeftIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path d="M19 12H5M12 19l-7-7 7-7" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 function SortRow({
   id,
   title,
@@ -69,6 +86,7 @@ function SortRow({
   url,
   onEdit,
   onDelete,
+  onNavigate,
   dragDisabled,
 }: {
   id: string
@@ -78,6 +96,7 @@ function SortRow({
   url?: string
   onEdit: () => void
   onDelete: () => void
+  onNavigate?: () => void
   dragDisabled?: boolean
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id, disabled: dragDisabled })
@@ -89,24 +108,27 @@ function SortRow({
         <button type="button" className={styles.drag} {...attributes} {...listeners} aria-label="拖拽排序">
           ⋮⋮
         </button>
-      ) : (
-        <span className={styles.dragPlaceholder} />
-      )}
+      ) : null}
       {icon !== undefined || url ? (
         <SiteIcon name={title} icon={icon} url={url || ''} size="sm" />
       ) : null}
-      <div className={styles.rowText}>
-        <strong>{title}</strong>
-        {subtitle ? <span>{subtitle}</span> : null}
-      </div>
-      <div className={styles.rowActions}>
-        {!dragDisabled ? (
-          <>
-            <button type="button" onClick={onEdit}>编辑</button>
-            <button type="button" className={styles.danger} onClick={onDelete}>删除</button>
-          </>
-        ) : null}
-      </div>
+      {onNavigate ? (
+        <button type="button" className={styles.rowTextBtn} onClick={onNavigate}>
+          <strong>{title}</strong>
+          {subtitle ? <span>{subtitle}</span> : null}
+        </button>
+      ) : (
+        <div className={styles.rowText}>
+          <strong>{title}</strong>
+          {subtitle ? <span>{subtitle}</span> : null}
+        </div>
+      )}
+      {!dragDisabled ? (
+        <div className={styles.rowActions}>
+          <button type="button" onClick={onEdit}>编辑</button>
+          <button type="button" className={styles.danger} onClick={onDelete}>删除</button>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -149,6 +171,28 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
     path.l3 !== undefined && l3 ? 'site'
       : path.l2 !== undefined && l2 ? 'l3'
         : 'l2'
+
+  const closeTreePanel = useCallback(() => {
+    setTreeOpen(false)
+  }, [])
+
+  const openTreePanel = useCallback(() => {
+    setTreeOpen(true)
+  }, [])
+
+  useEffect(() => {
+    if (!treeOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeTreePanel()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [treeOpen, closeTreePanel])
 
   useEffect(() => {
     checkApiHealth().then(async (health) => {
@@ -555,8 +599,65 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
 
   const selectPath = (next: AdminPath) => {
     setPath(next)
-    setTreeOpen(false)
+    closeTreePanel()
   }
+
+  const categoryTree = (
+    <>
+      <div className={styles.treeHead}>
+        <strong>分类树</strong>
+        <div className={styles.treeHeadActions}>
+          {canEdit ? (
+            <button type="button" onClick={() => openCatEditor('l1', null)}>+ 一级</button>
+          ) : null}
+          <button type="button" className={styles.treeClose} onClick={closeTreePanel} aria-label="关闭">
+            ✕
+          </button>
+        </div>
+      </div>
+      <input
+        className={styles.treeSearch}
+        value={treeQuery}
+        onChange={(e) => setTreeQuery(e.target.value)}
+        placeholder="搜索分类或网站…"
+      />
+      <div className={styles.treeBody}>
+        {filteredTree.map(({ item: one, i1, nav2 }) => (
+          <div key={`${one.title}-${i1}`} className={styles.treeBlock}>
+            <button
+              type="button"
+              className={path.l1 === i1 && path.l2 === undefined ? styles.treeActive : styles.treeBtn}
+              onClick={() => selectPath({ l1: i1 })}
+            >
+              {one.title}
+            </button>
+            {nav2.map(({ item: two, i2, nav3 }) => (
+              <div key={`${two.title}-${i2}`} className={styles.treeSub}>
+                <button
+                  type="button"
+                  className={path.l1 === i1 && path.l2 === i2 && path.l3 === undefined ? styles.treeActive : styles.treeBtn}
+                  onClick={() => selectPath({ l1: i1, l2: i2 })}
+                >
+                  {two.title}
+                </button>
+                {nav3.map(({ item: three, i3 }) => (
+                  <button
+                    key={`${three.title}-${i3}`}
+                    type="button"
+                    className={path.l1 === i1 && path.l2 === i2 && path.l3 === i3 ? styles.treeLeafActive : styles.treeLeaf}
+                    onClick={() => selectPath({ l1: i1, l2: i2, l3: i3 })}
+                  >
+                    {three.title}
+                    <span>{three.nav?.length || 0}</span>
+                  </button>
+                ))}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </>
+  )
 
   const panelRows =
     panelKind === 'site'
@@ -568,15 +669,25 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   return (
     <div className={styles.page}>
       <header className={styles.hero}>
-        <div>
-          <p className={styles.kicker}>Console</p>
-          <h1>导航管理</h1>
-          <p className={styles.heroSub}>登录后可编辑分类与网站，并同步到 GitHub 仓库</p>
+        <div className={styles.heroTop}>
+          <div className={styles.heroBrand}>
+            <p className={styles.kicker}>Console</p>
+            <h1>导航管理</h1>
+          </div>
+          <div className={styles.heroActions}>
+            {canEdit ? (
+              <button type="button" className={styles.heroActionBtn} onClick={exportJson} title="导出 db.json">
+                <ExportIcon />
+                <span>导出</span>
+              </button>
+            ) : null}
+            <a className={styles.heroActionBtn} href={`${baseUrl}sim/`}>
+              <ArrowLeftIcon />
+              <span>前台</span>
+            </a>
+          </div>
         </div>
-        <div className={styles.heroActions}>
-          <button type="button" className={styles.ghostBtn} onClick={exportJson}>导出 JSON</button>
-          <a className={styles.back} href={`${baseUrl}sim/`}>返回前台</a>
-        </div>
+        <p className={styles.heroSub}>登录后可编辑分类与网站，并同步到 GitHub 仓库</p>
       </header>
 
       <section className={styles.stats}>
@@ -620,7 +731,8 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
         </div>
 
         {!loggedIn ? (
-          useApi ? (
+          <div className={styles.loginPanel}>
+          {useApi ? (
             <>
               {apiHealth?.password ? (
                 <div className={styles.loginRow}>
@@ -705,7 +817,8 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
               </div>
             )}
           </>
-          )
+          )}
+          </div>
         ) : (
           <div className={styles.actionRow}>
             <button type="button" className={styles.primary} disabled={busy || !dirty} onClick={syncRemote}>
@@ -746,76 +859,26 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
       </section>
 
       <div className={styles.layout}>
-        {treeOpen ? (
-          <button
-            type="button"
-            className={styles.treeBackdrop}
-            aria-label="关闭分类树"
-            onClick={() => setTreeOpen(false)}
-          />
-        ) : null}
-
-        <aside className={`${styles.tree} ${treeOpen ? styles.treeOpen : ''}`}>
-          <div className={styles.treeHead}>
-            <strong>分类树</strong>
-            <div className={styles.treeHeadActions}>
-              <button type="button" disabled={!canEdit} onClick={() => openCatEditor('l1', null)}>+ 一级</button>
-              <button type="button" className={styles.treeClose} onClick={() => setTreeOpen(false)} aria-label="关闭">
-                ✕
-              </button>
-            </div>
-          </div>
-          <input
-            className={styles.treeSearch}
-            value={treeQuery}
-            onChange={(e) => setTreeQuery(e.target.value)}
-            placeholder="搜索分类或网站…"
-          />
-          <div className={styles.treeBody}>
-            {filteredTree.map(({ item: one, i1, nav2 }) => (
-              <div key={`${one.title}-${i1}`} className={styles.treeBlock}>
-                <button
-                  type="button"
-                  className={path.l1 === i1 && path.l2 === undefined ? styles.treeActive : styles.treeBtn}
-                  onClick={() => selectPath({ l1: i1 })}
-                >
-                  {one.title}
-                </button>
-                {nav2.map(({ item: two, i2, nav3 }) => (
-                  <div key={`${two.title}-${i2}`} className={styles.treeSub}>
-                    <button
-                      type="button"
-                      className={path.l1 === i1 && path.l2 === i2 && path.l3 === undefined ? styles.treeActive : styles.treeBtn}
-                      onClick={() => selectPath({ l1: i1, l2: i2 })}
-                    >
-                      {two.title}
-                    </button>
-                    {nav3.map(({ item: three, i3 }) => (
-                      <button
-                        key={`${three.title}-${i3}`}
-                        type="button"
-                        className={path.l1 === i1 && path.l2 === i2 && path.l3 === i3 ? styles.treeLeafActive : styles.treeLeaf}
-                        onClick={() => selectPath({ l1: i1, l2: i2, l3: i3 })}
-                      >
-                        {three.title}
-                        <span>{three.nav?.length || 0}</span>
-                      </button>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
+        <aside className={styles.tree}>
+          {categoryTree}
         </aside>
 
         <main className={styles.panel}>
-          <div className={styles.mobileBar}>
-            <button type="button" className={styles.treeToggle} onClick={() => setTreeOpen(true)}>
-              分类
-            </button>
-            <p className={styles.mobileCrumb}>{crumbs.join(' / ') || '选择分类'}</p>
-          </div>
-          {!canEdit ? <p className={styles.readOnlyHint}>当前为只读模式，登录后可新增、编辑、删除与排序</p> : null}
+          <button
+            type="button"
+            className={styles.mobileBar}
+            onClick={openTreePanel}
+            aria-haspopup="dialog"
+            aria-expanded={treeOpen}
+            aria-label="打开分类树"
+          >
+            <span className={styles.treeToggle}>分类</span>
+            <span className={styles.mobileCrumb}>{crumbs.join(' / ') || '选择分类'}</span>
+            <span className={styles.mobileChevron} aria-hidden>›</span>
+          </button>
+          {!canEdit ? (
+            <p className={styles.readOnlyHint}>只读模式：可浏览与切换分类，登录后显示编辑操作</p>
+          ) : null}
           <div className={styles.panelHead}>
             <div>
               <p className={styles.crumb}>{crumbs.join(' / ') || '请选择左侧分类'}</p>
@@ -823,27 +886,29 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
                 {panelKind === 'site' ? `网站列表 (${sites.length})` : panelKind === 'l3' ? '三级分类' : '二级分类'}
               </h2>
             </div>
-            <div className={styles.panelActions}>
-              {panelKind === 'site' ? (
-                <button type="button" className={styles.primary} disabled={!canEdit || !l3} onClick={() => openSiteEditor(null)}>
-                  新增网站
-                </button>
-              ) : panelKind === 'l3' ? (
-                <>
-                  <button type="button" disabled={!canEdit || !l2} onClick={() => openCatEditor('l3', null)}>新增三级</button>
-                  {path.l2 !== undefined && l2 ? (
-                    <button type="button" disabled={!canEdit} onClick={() => openCatEditor('l2', path.l2!, { title: l2.title, icon: l2.icon, ownVisible: l2.ownVisible })}>编辑当前二级</button>
-                  ) : null}
-                </>
-              ) : (
-                <>
-                  <button type="button" disabled={!canEdit || !l1} onClick={() => openCatEditor('l2', null)}>新增二级</button>
-                  {path.l1 !== undefined && l1 ? (
-                    <button type="button" disabled={!canEdit} onClick={() => openCatEditor('l1', path.l1!, { title: l1.title, icon: l1.icon, ownVisible: l1.ownVisible })}>编辑当前一级</button>
-                  ) : null}
-                </>
-              )}
-            </div>
+            {canEdit ? (
+              <div className={styles.panelActions}>
+                {panelKind === 'site' ? (
+                  <button type="button" className={styles.primary} disabled={!l3} onClick={() => openSiteEditor(null)}>
+                    新增网站
+                  </button>
+                ) : panelKind === 'l3' ? (
+                  <>
+                    <button type="button" disabled={!l2} onClick={() => openCatEditor('l3', null)}>新增三级</button>
+                    {path.l2 !== undefined && l2 ? (
+                      <button type="button" onClick={() => openCatEditor('l2', path.l2!, { title: l2.title, icon: l2.icon, ownVisible: l2.ownVisible })}>编辑当前二级</button>
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    <button type="button" disabled={!l1} onClick={() => openCatEditor('l2', null)}>新增二级</button>
+                    {path.l1 !== undefined && l1 ? (
+                      <button type="button" onClick={() => openCatEditor('l1', path.l1!, { title: l1.title, icon: l1.icon, ownVisible: l1.ownVisible })}>编辑当前一级</button>
+                    ) : null}
+                  </>
+                )}
+              </div>
+            ) : null}
           </div>
 
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => onDragEnd(e, panelKind === 'site' ? 'site' : panelKind)}>
@@ -858,6 +923,15 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
                     icon={'icon' in row ? row.icon : undefined}
                     url={'url' in row ? row.url : undefined}
                     dragDisabled={!canEdit}
+                    onNavigate={
+                      panelKind === 'l2' && path.l1 !== undefined
+                        ? () => selectPath({ l1: path.l1!, l2: row.idx })
+                        : panelKind === 'l3' && path.l1 !== undefined && path.l2 !== undefined
+                          ? () => selectPath({ l1: path.l1!, l2: path.l2!, l3: row.idx })
+                          : panelKind === 'site' && 'url' in row && row.url
+                            ? () => window.open(row.url, '_blank', 'noopener,noreferrer')
+                            : undefined
+                    }
                     onEdit={() => {
                       if (panelKind === 'site') openSiteEditor(row.idx, sites[row.idx])
                       else if (panelKind === 'l3') openCatEditor('l3', row.idx, { title: l2!.nav[row.idx].title, icon: l2!.nav[row.idx].icon, ownVisible: l2!.nav[row.idx].ownVisible })
@@ -879,6 +953,23 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
           </DndContext>
         </main>
       </div>
+
+      {treeOpen && typeof document !== 'undefined'
+        ? createPortal(
+            <div className={styles.treeOverlay} role="presentation">
+              <button
+                type="button"
+                className={styles.treeBackdrop}
+                aria-label="关闭分类树"
+                onClick={closeTreePanel}
+              />
+              <aside className={styles.treeDrawer} aria-label="分类树">
+                {categoryTree}
+              </aside>
+            </div>,
+            document.body,
+          )
+        : null}
 
       {editKind && editKind !== 'site' ? (
         <div className={styles.modal} onClick={() => setEditKind(null)}>
