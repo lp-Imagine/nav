@@ -78,6 +78,22 @@ function ArrowLeftIcon() {
   )
 }
 
+function EditIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function TrashIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 function SortRow({
   id,
   title,
@@ -109,24 +125,30 @@ function SortRow({
           ⋮⋮
         </button>
       ) : null}
-      {icon !== undefined || url ? (
-        <SiteIcon name={title} icon={icon} url={url || ''} size="sm" />
-      ) : null}
-      {onNavigate ? (
-        <button type="button" className={styles.rowTextBtn} onClick={onNavigate}>
-          <strong>{title}</strong>
-          {subtitle ? <span>{subtitle}</span> : null}
-        </button>
-      ) : (
-        <div className={styles.rowText}>
-          <strong>{title}</strong>
-          {subtitle ? <span>{subtitle}</span> : null}
-        </div>
-      )}
+      <div className={styles.rowMain}>
+        {icon !== undefined || url ? (
+          <SiteIcon name={title} icon={icon} url={url || ''} size="sm" />
+        ) : null}
+        {onNavigate ? (
+          <button type="button" className={styles.rowTextBtn} onClick={onNavigate}>
+            <strong>{title}</strong>
+            {subtitle ? <span>{subtitle}</span> : null}
+          </button>
+        ) : (
+          <div className={styles.rowText}>
+            <strong>{title}</strong>
+            {subtitle ? <span>{subtitle}</span> : null}
+          </div>
+        )}
+      </div>
       {!dragDisabled ? (
         <div className={styles.rowActions}>
-          <button type="button" onClick={onEdit}>编辑</button>
-          <button type="button" className={styles.danger} onClick={onDelete}>删除</button>
+          <button type="button" className={styles.iconBtn} onClick={onEdit} aria-label="编辑" title="编辑">
+            <EditIcon />
+          </button>
+          <button type="button" className={`${styles.iconBtn} ${styles.danger}`} onClick={onDelete} aria-label="删除" title="删除">
+            <TrashIcon />
+          </button>
         </div>
       ) : null}
     </div>
@@ -155,6 +177,49 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   const [webForm, setWebForm] = useState<INavFourProp>({
     name: '', desc: '', url: '', icon: '', rate: 5, urls: {},
   })
+  const [formError, setFormError] = useState('')
+  const [formInvalid, setFormInvalid] = useState<Record<string, boolean>>({})
+  const [confirmDialog, setConfirmDialog] = useState<{
+    title: string
+    message: string
+    confirmLabel: string
+    danger?: boolean
+    resolve: (ok: boolean) => void
+  } | null>(null)
+
+  const clearFormFeedback = useCallback(() => {
+    setFormError('')
+    setFormInvalid({})
+  }, [])
+
+  const closeEditor = useCallback(() => {
+    setEditKind(null)
+    clearFormFeedback()
+  }, [clearFormFeedback])
+
+  const askConfirm = useCallback((opts: {
+    title: string
+    message: string
+    confirmLabel?: string
+    danger?: boolean
+  }) => {
+    return new Promise<boolean>((resolve) => {
+      setConfirmDialog({
+        title: opts.title,
+        message: opts.message,
+        confirmLabel: opts.confirmLabel || '确定',
+        danger: opts.danger,
+        resolve,
+      })
+    })
+  }, [])
+
+  const closeConfirm = useCallback((ok: boolean) => {
+    setConfirmDialog((current) => {
+      current?.resolve(ok)
+      return null
+    })
+  }, [])
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
   const canEdit = loggedIn
@@ -193,6 +258,15 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
       window.removeEventListener('keydown', onKey)
     }
   }, [treeOpen, closeTreePanel])
+
+  useEffect(() => {
+    if (!confirmDialog) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeConfirm(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [confirmDialog, closeConfirm])
 
   useEffect(() => {
     checkApiHealth().then(async (health) => {
@@ -359,7 +433,12 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
 
   const syncRemote = async () => {
     if (!requireLoginForSync()) return
-    if (!window.confirm('确定将当前数据同步到 GitHub 吗？')) return
+    const ok = await askConfirm({
+      title: '同步到 GitHub',
+      message: '将把当前本地数据写入仓库。CI 构建完成后前台才会更新。',
+      confirmLabel: '同步',
+    })
+    if (!ok) return
     setBusy(true)
     try {
       if (useApi) {
@@ -398,15 +477,22 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
     notify('已退出')
   }
 
-  const resetLocal = () => {
+  const resetLocal = async () => {
     if (!requireEdit()) return
-    if (!window.confirm('放弃本地未同步修改，恢复为构建时数据？')) return
+    const ok = await askConfirm({
+      title: '放弃修改',
+      message: '将丢弃本地未同步的修改，恢复为当前构建数据。此操作不可撤销。',
+      confirmLabel: '放弃修改',
+      danger: true,
+    })
+    if (!ok) return
     persist(JSON.parse(baseline) as INavProps[])
     notify('已恢复初始数据')
   }
 
   const openCatEditor = (kind: EditKind, idx: number | null, preset?: { title?: string; icon?: string | null; ownVisible?: boolean }) => {
     if (!requireEdit()) return
+    clearFormFeedback()
     setEditKind(kind)
     setEditIdx(idx)
     setCatForm({
@@ -418,6 +504,7 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
 
   const openSiteEditor = (idx: number | null, preset?: INavFourProp) => {
     if (!requireEdit()) return
+    clearFormFeedback()
     setEditKind('site')
     setEditIdx(idx)
     setWebForm(preset || { name: '', desc: '', url: '', icon: '', rate: 5, urls: {} })
@@ -426,12 +513,20 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
   const saveCategory = () => {
     if (!requireEdit()) return
     const title = catForm.title.trim()
-    if (!title) return notify('标题不能为空')
+    if (!title) {
+      setFormInvalid({ title: true })
+      setFormError('请填写分类标题')
+      return
+    }
     const next = structuredClone(list)
 
     if (editKind === 'l1') {
       if (editIdx === null) {
-        if (next.some((x) => x.title === title)) return notify('一级分类已存在')
+        if (next.some((x) => x.title === title)) {
+          setFormInvalid({ title: true })
+          setFormError('一级分类已存在')
+          return
+        }
         next.unshift({ title, icon: catForm.icon || null, ownVisible: catForm.ownVisible, createdAt: new Date().toISOString(), nav: [] })
         setPath({ l1: 0 })
       } else {
@@ -441,9 +536,16 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
       }
     } else if (editKind === 'l2') {
       const one = getL1(next, path.l1)
-      if (!one) return notify('请选择一级分类')
+      if (!one) {
+        setFormError('请选择一级分类')
+        return
+      }
       if (editIdx === null) {
-        if (one.nav.some((x) => x.title === title)) return notify('二级分类已存在')
+        if (one.nav.some((x) => x.title === title)) {
+          setFormInvalid({ title: true })
+          setFormError('二级分类已存在')
+          return
+        }
         one.nav.unshift({ title, icon: catForm.icon || null, ownVisible: catForm.ownVisible, createdAt: new Date().toISOString(), nav: [] })
         setPath((p) => ({ l1: p.l1, l2: 0 }))
       } else {
@@ -454,9 +556,16 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
     } else if (editKind === 'l3') {
       const one = getL1(next, path.l1)
       const two = getL2(one, path.l2)
-      if (!two) return notify('请选择二级分类')
+      if (!two) {
+        setFormError('请选择二级分类')
+        return
+      }
       if (editIdx === null) {
-        if (two.nav.some((x) => x.title === title)) return notify('三级分类已存在')
+        if (two.nav.some((x) => x.title === title)) {
+          setFormInvalid({ title: true })
+          setFormError('三级分类已存在')
+          return
+        }
         two.nav.unshift({ title, icon: catForm.icon || null, ownVisible: catForm.ownVisible, createdAt: new Date().toISOString(), nav: [] })
         setPath((p) => ({ l1: p.l1, l2: p.l2, l3: 0 }))
       } else {
@@ -467,16 +576,25 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
     }
 
     persist(next)
-    setEditKind(null)
+    closeEditor()
     notify(editIdx === null ? '已新增' : '已保存')
   }
 
   const saveSite = () => {
     if (!requireEdit()) return
-    if (!webForm.name.trim() || !webForm.url.trim()) return notify('名称和 URL 必填')
+    const nameEmpty = !webForm.name.trim()
+    const urlEmpty = !webForm.url.trim()
+    if (nameEmpty || urlEmpty) {
+      setFormInvalid({ name: nameEmpty, url: urlEmpty })
+      setFormError(nameEmpty && urlEmpty ? '名称和 URL 必填' : nameEmpty ? '请填写名称' : '请填写 URL')
+      return
+    }
     const next = structuredClone(list)
     const three = getL3(getL2(getL1(next, path.l1), path.l2), path.l3)
-    if (!three) return notify('请先选择三级分类')
+    if (!three) {
+      setFormError('请先选择三级分类')
+      return
+    }
 
     if (editIdx === null) {
       three.nav.unshift({ ...webForm, createdAt: new Date().toISOString() })
@@ -484,13 +602,19 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
       three.nav[editIdx] = { ...three.nav[editIdx], ...webForm }
     }
     persist(next)
-    setEditKind(null)
+    closeEditor()
     notify('网站已保存')
   }
 
-  const deleteItem = (kind: EditKind, idx: number) => {
+  const deleteItem = async (kind: EditKind, idx: number) => {
     if (!requireEdit()) return
-    if (!window.confirm('确定删除？')) return
+    const ok = await askConfirm({
+      title: '确认删除',
+      message: '删除后仅影响本地草稿，同步到 GitHub 前仍可「放弃修改」恢复。',
+      confirmLabel: '删除',
+      danger: true,
+    })
+    if (!ok) return
     const next = structuredClone(list)
     if (kind === 'l1') {
       next.splice(idx, 1)
@@ -972,17 +1096,29 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
         : null}
 
       {editKind && editKind !== 'site' ? (
-        <div className={styles.modal} onClick={() => setEditKind(null)}>
-          <div className={styles.dialog} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modal} onClick={closeEditor}>
+          <div className={styles.dialog} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
             <h3>{editIdx === null ? '新增分类' : '编辑分类'}</h3>
-            <label>标题<input value={catForm.title} onChange={(e) => setCatForm({ ...catForm, title: e.target.value })} /></label>
+            <label>
+              标题
+              <input
+                className={formInvalid.title ? styles.fieldInvalid : undefined}
+                value={catForm.title}
+                onChange={(e) => {
+                  setCatForm({ ...catForm, title: e.target.value })
+                  if (formError) clearFormFeedback()
+                }}
+                autoFocus
+              />
+            </label>
             <label>图标 URL<input value={catForm.icon} onChange={(e) => setCatForm({ ...catForm, icon: e.target.value })} placeholder="可选" /></label>
             <label className={styles.check}>
               <input type="checkbox" checked={catForm.ownVisible} onChange={(e) => setCatForm({ ...catForm, ownVisible: e.target.checked })} />
               仅登录后在前台可见
             </label>
+            {formError ? <p className={styles.formError} role="alert">{formError}</p> : null}
             <div className={styles.modalActions}>
-              <button type="button" onClick={() => setEditKind(null)}>取消</button>
+              <button type="button" onClick={closeEditor}>取消</button>
               <button type="button" className={styles.primary} onClick={saveCategory}>保存</button>
             </div>
           </div>
@@ -990,22 +1126,78 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
       ) : null}
 
       {editKind === 'site' ? (
-        <div className={styles.modal} onClick={() => setEditKind(null)}>
-          <div className={styles.dialog} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.modal} onClick={closeEditor}>
+          <div className={styles.dialog} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
             <h3>{editIdx === null ? '新增网站' : '编辑网站'}</h3>
-            <label>名称<input value={webForm.name} onChange={(e) => setWebForm({ ...webForm, name: e.target.value })} /></label>
-            <label>URL<input value={webForm.url} onChange={(e) => setWebForm({ ...webForm, url: e.target.value })} /></label>
+            <label>
+              名称
+              <input
+                className={formInvalid.name ? styles.fieldInvalid : undefined}
+                value={webForm.name}
+                onChange={(e) => {
+                  setWebForm({ ...webForm, name: e.target.value })
+                  if (formError) clearFormFeedback()
+                }}
+                autoFocus
+              />
+            </label>
+            <label>
+              URL
+              <input
+                className={formInvalid.url ? styles.fieldInvalid : undefined}
+                value={webForm.url}
+                onChange={(e) => {
+                  setWebForm({ ...webForm, url: e.target.value })
+                  if (formError) clearFormFeedback()
+                }}
+              />
+            </label>
             <label>描述<textarea rows={3} value={webForm.desc} onChange={(e) => setWebForm({ ...webForm, desc: e.target.value })} /></label>
             <label>图标 URL<input value={webForm.icon || ''} onChange={(e) => setWebForm({ ...webForm, icon: e.target.value })} placeholder="留空将自动使用站点 favicon" /></label>
             {webForm.url ? <SiteIcon name={webForm.name || '?'} icon={webForm.icon} url={webForm.url} size="lg" /> : null}
             <label>评分<input type="number" min={0} max={5} step={0.5} value={webForm.rate ?? 5} onChange={(e) => setWebForm({ ...webForm, rate: Number(e.target.value) })} /></label>
+            {formError ? <p className={styles.formError} role="alert">{formError}</p> : null}
             <div className={styles.modalActions}>
-              <button type="button" onClick={() => setEditKind(null)}>取消</button>
+              <button type="button" onClick={closeEditor}>取消</button>
               <button type="button" className={styles.primary} onClick={saveSite}>保存</button>
             </div>
           </div>
         </div>
       ) : null}
+
+      {confirmDialog
+        ? createPortal(
+            <div
+              className={`${styles.modal} ${styles.confirmModal}`}
+              role="presentation"
+              onClick={() => closeConfirm(false)}
+            >
+              <div
+                className={`${styles.dialog} ${styles.confirmDialog}`}
+                role="alertdialog"
+                aria-modal="true"
+                aria-labelledby="admin-confirm-title"
+                aria-describedby="admin-confirm-desc"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 id="admin-confirm-title">{confirmDialog.title}</h3>
+                <p id="admin-confirm-desc" className={styles.confirmMessage}>{confirmDialog.message}</p>
+                <div className={styles.modalActions}>
+                  <button type="button" onClick={() => closeConfirm(false)}>取消</button>
+                  <button
+                    type="button"
+                    className={confirmDialog.danger ? styles.dangerSolid : styles.primary}
+                    autoFocus
+                    onClick={() => closeConfirm(true)}
+                  >
+                    {confirmDialog.confirmLabel}
+                  </button>
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   )
 }

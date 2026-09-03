@@ -16,8 +16,15 @@ export interface ApiSession {
   user?: string
 }
 
+function apiUrl(path: string) {
+  const base = API_BASE.replace(/\/$/, '')
+  const p = path.startsWith('/') ? path : `/${path}`
+  // Astro trailingSlash:always 时，Vite 代理要带尾斜杠才会命中 /api
+  return `${base}${p.endsWith('/') ? p : `${p}/`}`
+}
+
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(apiUrl(path), {
     ...init,
     credentials: 'include',
     headers: {
@@ -54,7 +61,7 @@ export async function logoutApi() {
 }
 
 export function githubOAuthUrl() {
-  return `${API_BASE}/auth/github`
+  return apiUrl('/auth/github')
 }
 
 export async function syncDbToServer(list: INavProps[]) {

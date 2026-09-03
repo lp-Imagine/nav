@@ -12,7 +12,7 @@ import {
 } from './session.js'
 import { exchangeOAuthCode, updateDbFile, verifyGithubUser } from './github.js'
 
-const app = new Hono()
+const app = new Hono({ strict: false })
 
 app.use(
   '/api/*',
