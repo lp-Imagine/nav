@@ -1,61 +1,61 @@
 [
   {
     "name": "站内",
-    "icon": "https://www.google.com/s2/favicons?domain=nav3.cn&sz=64",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/nav3.cn.ico",
     "placeholder": "站内搜索",
     "blocked": false
   },
   {
     "name": "Perplexity",
     "url": "https://www.perplexity.ai/search?q=",
-    "icon": "https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/perplexity.ai.png",
     "placeholder": "AI 搜索，带引用来源",
     "blocked": false
   },
   {
     "name": "秘塔",
     "url": "https://metaso.cn/?q=",
-    "icon": "https://www.google.com/s2/favicons?domain=metaso.cn&sz=64",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/metaso.cn.ico",
     "placeholder": "无广告 AI 搜索",
     "blocked": false
   },
   {
     "name": "ChatGPT",
     "url": "https://chatgpt.com/?q=",
-    "icon": "https://www.google.com/s2/favicons?domain=chatgpt.com&sz=64",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/chatgpt.com.png",
     "placeholder": "问 ChatGPT",
     "blocked": false
   },
   {
     "name": "百度",
     "url": "https://www.baidu.com/s?wd=",
-    "icon": "https://www.google.com/s2/favicons?domain=baidu.com&sz=64",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/baidu.com.ico",
     "placeholder": "百度一下",
     "blocked": false
   },
   {
     "name": "Google",
     "url": "https://www.google.com/search?q=",
-    "icon": "https://www.google.com/s2/favicons?domain=google.com&sz=64",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/google.com.png",
     "blocked": false
   },
   {
     "name": "必应",
     "url": "https://cn.bing.com/search?q=",
-    "icon": "https://www.google.com/s2/favicons?domain=bing.com&sz=64",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/cn.bing.com.ico",
     "blocked": false
   },
   {
     "name": "GitHub",
     "url": "https://github.com/search?q=",
-    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/github.com.ico",
     "placeholder": "Search GitHub",
     "blocked": false
   },
   {
     "name": "知乎",
     "url": "https://www.zhihu.com/search?type=content&q=",
-    "icon": "https://www.google.com/s2/favicons?domain=zhihu.com&sz=64",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/zhihu.com.ico",
     "blocked": false
   },
   {

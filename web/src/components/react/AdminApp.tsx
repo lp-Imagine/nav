@@ -1024,14 +1024,20 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
                   <>
                     <button type="button" disabled={!l2} onClick={() => openCatEditor('l3', null)}>新增三级</button>
                     {path.l2 !== undefined && l2 ? (
-                      <button type="button" onClick={() => openCatEditor('l2', path.l2!, { title: l2.title, icon: l2.icon, ownVisible: l2.ownVisible })}>编辑当前二级</button>
+                      <button type="button" onClick={() => openCatEditor('l2', path.l2!, { title: l2.title, icon: l2.icon, ownVisible: l2.ownVisible })}>
+                        <span className={styles.btnLabelLong}>编辑当前二级</span>
+                        <span className={styles.btnLabelShort}>编辑二级</span>
+                      </button>
                     ) : null}
                   </>
                 ) : (
                   <>
                     <button type="button" disabled={!l1} onClick={() => openCatEditor('l2', null)}>新增二级</button>
                     {path.l1 !== undefined && l1 ? (
-                      <button type="button" onClick={() => openCatEditor('l1', path.l1!, { title: l1.title, icon: l1.icon, ownVisible: l1.ownVisible })}>编辑当前一级</button>
+                      <button type="button" onClick={() => openCatEditor('l1', path.l1!, { title: l1.title, icon: l1.icon, ownVisible: l1.ownVisible })}>
+                        <span className={styles.btnLabelLong}>编辑当前一级</span>
+                        <span className={styles.btnLabelShort}>编辑一级</span>
+                      </button>
                     ) : null}
                   </>
                 )}

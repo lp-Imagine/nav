@@ -10,7 +10,8 @@
     "build": "npm run build --prefix web",
     "build:api": "npm run build --prefix server",
     "preview": "npm run preview --prefix web",
-    "build:pages": "PUBLIC_BASE=/nav/ npm run build --prefix web"
+    "build:pages": "PUBLIC_BASE=/nav/ npm run build --prefix web",
+    "icons:migrate": "node scripts/migrate-icons-to-cos.mjs"
   },
   "engines": {
     "node": ">=22.12.0"

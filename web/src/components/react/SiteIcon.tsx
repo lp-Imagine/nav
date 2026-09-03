@@ -13,9 +13,9 @@ interface Props {
 const sizes = { xs: 22, sm: 32, md: 40, lg: 48 }
 
 export default function SiteIcon({ name, icon, url = '', size = 'md', className }: Props) {
-  const candidates = iconCandidates(icon, url)
-  const [idx, setIdx] = useState(0)
   const px = sizes[size]
+  const candidates = iconCandidates(icon, url, px)
+  const [idx, setIdx] = useState(0)
   const src = candidates[idx]
 
   useEffect(() => {

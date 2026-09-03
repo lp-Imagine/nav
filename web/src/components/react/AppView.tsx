@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { INavProps, ISearchEngineProps } from '../../lib/types'
-import { visibleNav } from '../../lib/data'
+import { visibleNav, totalWeb } from '../../lib/data'
 import { isLoggedIn } from '../../lib/github'
 import { useReducedMotion, useScrollY } from '../../lib/motion'
 import { useViewportRedirect } from '../../lib/viewport'
@@ -86,7 +86,7 @@ export default function AppView({ websiteList, searchEngines, title, baseUrl }: 
   const sheetOpeningRef = useRef(false)
 
   const reducedMotion = useReducedMotion()
-  const scrolled = useScrollY(48)
+  const scrolled = useScrollY(16)
 
   useViewportRedirect('app', baseUrl)
 
@@ -146,6 +146,7 @@ export default function AppView({ websiteList, searchEngines, title, baseUrl }: 
 
   const top = useMemo(() => visibleNav(websiteList, login), [websiteList, login])
   const side = useMemo(() => visibleNav(top[page]?.nav || [], login), [top, page, login])
+  const totalSites = useMemo(() => totalWeb(websiteList), [websiteList])
   const currentTop = top[page]
   const currentSide = side[id]
 
@@ -186,6 +187,8 @@ export default function AppView({ websiteList, searchEngines, title, baseUrl }: 
       <header className={`${styles.hero} ${scrolled ? styles.heroCompact : ''}`}>
         <div className={styles.heroOrbA} aria-hidden />
         <div className={styles.heroOrbB} aria-hidden />
+        <div className={styles.heroOrbC} aria-hidden />
+        <div className={styles.heroGlow} aria-hidden />
         <div className={styles.heroInner}>
           <div className={styles.brandRow}>
             <div className={styles.brandCopy}>
@@ -194,6 +197,9 @@ export default function AppView({ websiteList, searchEngines, title, baseUrl }: 
                 <BrandMark baseUrl={baseUrl} size={28} className={styles.brandMark} />
                 <span>{title}</span>
               </h1>
+              <p className={styles.brandLead}>
+                精选工具与资源 · {totalSites} 站
+              </p>
             </div>
             <div className={styles.toolGroup}>
               <ThemeToggle className={styles.toolBtn} variant="icon" />
@@ -202,7 +208,6 @@ export default function AppView({ websiteList, searchEngines, title, baseUrl }: 
               </a>
             </div>
           </div>
-
         </div>
       </header>
 

@@ -128,6 +128,8 @@ docker run --rm -p 8080:80 \
 
 **自动部署**：配置 GitHub Actions Secrets（`VPS_HOST` 等）后，push `main` 会 SSH 到服务器重建容器，见 [`deploy/DEPLOY-DRAFTLY.md`](deploy/DEPLOY-DRAFTLY.md) 第五节。
 
+**站点图标 COS**：国内访问 Google Favicon 不稳时，可将图标迁到与 penn-notes 相同的桶（`nav/icons/`），见 [`scripts/ICONS-COS.md`](scripts/ICONS-COS.md)。
+
 ## 部署：自建服务器
 
 ```bash
