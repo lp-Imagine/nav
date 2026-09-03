@@ -30,6 +30,18 @@
   min-width: 0;
 }
 
+.heroBrand h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brandMark {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 8px;
+}
+
 .kicker {
   margin: 0;
   letter-spacing: 0.1em;

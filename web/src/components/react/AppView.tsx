@@ -6,6 +6,7 @@ import { useReducedMotion, useScrollY } from '../../lib/motion'
 import { useViewportRedirect } from '../../lib/viewport'
 import SearchBar from './SearchBar'
 import SiteIcon from './SiteIcon'
+import BrandMark from './BrandMark'
 import ThemeToggle from './ThemeToggle'
 import styles from './AppView.module.css'
 
@@ -189,7 +190,10 @@ export default function AppView({ websiteList, searchEngines, title, baseUrl }: 
           <div className={styles.brandRow}>
             <div className={styles.brandCopy}>
               <p className={styles.brandEyebrow}>发现好站</p>
-              <h1 className={styles.brandTitle}>{title}</h1>
+              <h1 className={styles.brandTitle}>
+                <BrandMark baseUrl={baseUrl} size={28} className={styles.brandMark} />
+                <span>{title}</span>
+              </h1>
             </div>
             <div className={styles.toolGroup}>
               <ThemeToggle className={styles.toolBtn} variant="icon" />

@@ -6,6 +6,7 @@ import { useInView, useReducedMotion, useScrollY } from '../../lib/motion'
 import { useViewportRedirect } from '../../lib/viewport'
 import SearchBar from './SearchBar'
 import SiteIcon from './SiteIcon'
+import BrandMark from './BrandMark'
 import ThemeToggle from './ThemeToggle'
 import styles from './SimView.module.css'
 
@@ -182,7 +183,8 @@ export default function SimView(props: Props) {
             className={`${styles.brand} ${reducedMotion ? '' : styles.fadeUp}`}
             style={reducedMotion ? undefined : { animationDelay: '120ms' }}
           >
-            {title}
+            <BrandMark baseUrl={baseUrl} size={42} className={styles.brandMark} />
+            <span>{title}</span>
           </h1>
           <p
             className={`${styles.lead} ${reducedMotion ? '' : styles.fadeUp}`}

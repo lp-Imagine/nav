@@ -51,6 +51,7 @@ import {
 } from '../../lib/github'
 import { parseBookmark } from '../../lib/bookmark'
 import SiteIcon from './SiteIcon'
+import BrandMark from './BrandMark'
 import styles from './AdminApp.module.css'
 
 interface Props {
@@ -796,7 +797,10 @@ export default function AdminApp({ initialList, gitRepoUrl, githubClientId, base
         <div className={styles.heroTop}>
           <div className={styles.heroBrand}>
             <p className={styles.kicker}>Console</p>
-            <h1>导航管理</h1>
+            <h1>
+              <BrandMark baseUrl={baseUrl} size={30} className={styles.brandMark} />
+              <span>导航管理</span>
+            </h1>
           </div>
           <div className={styles.heroActions}>
             {canEdit ? (

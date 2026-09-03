@@ -141,11 +141,20 @@
 
 .brand {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
   font-family: var(--font-display);
   font-size: clamp(2.2rem, 6.5vw, 3.8rem);
   font-weight: 800;
   line-height: 1.06;
   letter-spacing: -0.03em;
+}
+
+.brandMark {
+  width: clamp(2rem, 5vw, 2.75rem);
+  height: clamp(2rem, 5vw, 2.75rem);
+  border-radius: 12px;
 }
 
 .lead {
