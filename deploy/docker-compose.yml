@@ -1,0 +1,24 @@
+# 腾讯云 / 宝塔：主机 Nginx 反代到 127.0.0.1:8080
+# 用法（仓库根目录）：
+#   cp deploy/.env.production.example deploy/.env
+#   docker compose -f deploy/docker-compose.yml up -d --build
+
+services:
+  nav:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        PUBLIC_BASE: /
+        PUBLIC_SITE: ${PUBLIC_SITE:-https://nav.draftly.cn}
+    image: penn-nav:latest
+    container_name: penn-nav
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+    env_file:
+      - .env
+    environment:
+      PORT: "8787"
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-https://nav.draftly.cn}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}

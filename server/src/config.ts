@@ -17,7 +17,7 @@ export const config = {
   githubClientSecret: process.env.GITHUB_CLIENT_SECRET || '',
   oauthCallbackUrl: process.env.OAUTH_CALLBACK_URL || 'http://127.0.0.1:8787/api/auth/github/callback',
   frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://127.0.0.1:4321',
-  cookieSecure: process.env.COOKIE_SECURE === 'true',
+  cookieSecure: process.env.COOKIE_SECURE === 'true' || process.env.COOKIE_SECURE === '1',
 }
 
 export function authConfigured() {

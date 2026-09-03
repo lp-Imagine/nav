@@ -5,7 +5,7 @@ const config: IConfig = {
   branch: 'main',
   hashMode: false,
   showGithub: true,
-  homeUrl: 'https://imagine-nav.vercel.app',
+  homeUrl: 'https://nav.draftly.cn',
   title: 'Penn的导航小站',
   description: '收录 AI 工具、前端工程、开源生态与常用效率站点的个人导航',
   keywords: '导航,AI工具,ChatGPT,DeepSeek,Cursor,前端资源,Vite,社区站点,设计师,实用工具,学习资源,Python,网络安全',
@@ -13,7 +13,7 @@ const config: IConfig = {
   basePath: '/',
   footerContent: `
     <div class="footer-total">共收录 \${total} 个网站</div>
-    <div>Copyright © 2020–2026 <a href="https://imagine-nav.vercel.app">Penn</a></div>
+    <div>Copyright © 2020–2026 <a href="https://nav.draftly.cn">Penn</a></div>
   `,
   iconfontUrl: '//at.alicdn.com/t/font_2522843_wl70o31sy6.js',
   baiduStatisticsUrl: 'https://hm.baidu.com/hm.js?47d0c0f4fcd160c99c3ef9b22a90eeed',

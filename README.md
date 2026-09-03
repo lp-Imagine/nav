@@ -116,6 +116,18 @@ docker run --rm -p 8080:80 \
 
 访问 http://localhost:8080/admin/ ，密码登录后同步。
 
+### 腾讯云轻量 + 宝塔（nav.draftly.cn）
+
+与 GitHub Pages 并行：自建域名带 API。见完整步骤：
+
+- [`deploy/DEPLOY-DRAFTLY.md`](deploy/DEPLOY-DRAFTLY.md)
+- Compose：[`deploy/docker-compose.yml`](deploy/docker-compose.yml)
+- 主机反代示例：[`deploy/nginx.host.conf.example`](deploy/nginx.host.conf.example)
+
+摘要：DNS `nav` → 服务器 IP → `docker compose -f deploy/docker-compose.yml up -d --build`（监听 `127.0.0.1:8080`）→ 宝塔站点反代到该端口 → Let's Encrypt。
+
+**自动部署**：配置 GitHub Actions Secrets（`VPS_HOST` 等）后，push `main` 会 SSH 到服务器重建容器，见 [`deploy/DEPLOY-DRAFTLY.md`](deploy/DEPLOY-DRAFTLY.md) 第五节。
+
 ## 部署：自建服务器
 
 ```bash

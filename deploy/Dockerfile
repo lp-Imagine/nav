@@ -1,5 +1,6 @@
 # 可选：静态站点 + API 后端一体镜像
 # docker build -f deploy/Dockerfile -t penn-nav .
+# 或：docker compose -f deploy/docker-compose.yml up -d --build
 # docker run --rm -p 8080:80 \
 #   -e SESSION_SECRET=your-secret \
 #   -e ADMIN_PASSWORD=your-password \
@@ -7,6 +8,8 @@
 #   penn-nav
 
 FROM node:22-alpine AS build-web
+ARG PUBLIC_BASE=/
+ARG PUBLIC_SITE=https://nav.draftly.cn
 WORKDIR /repo
 COPY web/package.json web/package-lock.json ./web/
 WORKDIR /repo/web
@@ -15,7 +18,8 @@ WORKDIR /repo
 COPY data ./data
 COPY web ./web
 WORKDIR /repo/web
-ENV PUBLIC_BASE=/
+ENV PUBLIC_BASE=$PUBLIC_BASE
+ENV PUBLIC_SITE=$PUBLIC_SITE
 RUN npm run build
 
 FROM node:22-alpine AS build-api

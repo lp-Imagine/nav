@@ -1,0 +1,35 @@
+# 宝塔 / 主机 Nginx：对外 80/443，反代到 Docker 容器 127.0.0.1:8080
+# 在宝塔「网站 → 设置 → 配置文件」中参考下方 server 段；
+# SSL 证书路径以宝塔申请 Let's Encrypt 后自动写入为准。
+
+server {
+    listen 80;
+    server_name nav.draftly.cn;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name nav.draftly.cn;
+
+    # 宝塔申请证书后会自动插入类似：
+    # ssl_certificate     /www/server/panel/vhost/cert/nav.draftly.cn/fullchain.pem;
+    # ssl_certificate_key /www/server/panel/vhost/cert/nav.draftly.cn/privkey.pem;
+
+    client_max_body_size 20m;
+
+    # 后台「同步到 GitHub」使用 PUT /api/db
+    # 若宝塔开启「禁止非常用 HTTP 方法」，请关闭，否则同步会失败。
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 120s;
+        proxy_read_timeout 120s;
+    }
+}
