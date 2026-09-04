@@ -116,7 +116,7 @@
                 "desc": "阿里云通义大模型，覆盖对话、办公与智能体",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://www.google.com/s2/favicons?domain=tongyi.com&sz=64",
+                "icon": "https://img.alicdn.com/imgextra/i2/O1CN01taBbMS1CfyJoOt0lB_!!6000000000109-2-tps-80-80.png",
                 "url": "https://www.tongyi.com/",
                 "urls": {}
               },
@@ -1280,7 +1280,7 @@
                 "desc": "有状态 Agent 编排、人机协同与检查点",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://www.google.com/s2/favicons?domain=langchain-ai.github.io&sz=64",
+                "icon": "https://github.com/langchain-ai.png",
                 "url": "https://langchain-ai.github.io/langgraph/",
                 "urls": {}
               },
@@ -1291,7 +1291,7 @@
                 "desc": "OpenAI 官方 Agent SDK，多工具与 handoff",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://www.google.com/s2/favicons?domain=openai.github.io&sz=64",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/openai.com.png",
                 "url": "https://openai.github.io/openai-agents-python/",
                 "urls": {
                   "Github": "https://github.com/openai/openai-agents-python"
@@ -1548,7 +1548,7 @@
                 "desc": "台大李宏毅生成式 AI 课程，含 Agent 与工具调用专题",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://www.google.com/s2/favicons?domain=speech.ee.ntu.edu.tw&sz=64",
+                "icon": "https://speech.ee.ntu.edu.tw/~hylee/favicon.ico",
                 "url": "https://speech.ee.ntu.edu.tw/~hylee/ml/2024-spring.php",
                 "urls": {}
               },
@@ -1931,7 +1931,7 @@
                 "desc": "音视频转写、纪要与发言人区分",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://www.google.com/s2/favicons?domain=tingwu.aliyun.com&sz=64",
+                "icon": "https://g.alicdn.com/idst-fe/mind-meeting-assistant2/0.0.189/favicon.png",
                 "url": "https://tingwu.aliyun.com/",
                 "urls": {}
               },
@@ -9416,7 +9416,7 @@
                 "desc": "支持 HTTP/2 与 async 的现代请求库",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://www.google.com/s2/favicons?domain=python-httpx.org&sz=64",
+                "icon": "https://www.python-httpx.org/assets/images/favicon.png",
                 "url": "https://www.python-httpx.org/",
                 "urls": {
                   "Github": "https://github.com/encode/httpx"

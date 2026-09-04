@@ -33,6 +33,8 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
     )
   }
 
+  const advance = () => setIdx((i) => i + 1)
+
   return (
     <span className={`${styles.wrap} ${styles[size]} ${className || ''}`}>
       <img
@@ -44,7 +46,14 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
         loading="lazy"
         decoding="async"
         referrerPolicy="no-referrer"
-        onError={() => setIdx((i) => i + 1)}
+        onError={advance}
+        onLoad={(e) => {
+          if (e.currentTarget.naturalWidth === 0) {
+            advance()
+            return
+          }
+          e.currentTarget.dataset.ok = '1'
+        }}
       />
     </span>
   )

@@ -61,7 +61,7 @@
   {
     "name": "豆瓣",
     "url": "https://search.douban.com/book/subject_search?search_text=",
-    "icon": "https://www.google.com/s2/favicons?domain=douban.com&sz=64",
+    "icon": "https://www.douban.com/favicon.ico",
     "placeholder": "书名、作者、ISBN",
     "blocked": false
   }

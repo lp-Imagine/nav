@@ -49,6 +49,11 @@
   max-width: none;
   object-fit: contain;
   display: block;
+  opacity: 0;
+}
+
+.wrap img[data-ok='1'] {
+  opacity: 1;
 }
 
 .fallback {
