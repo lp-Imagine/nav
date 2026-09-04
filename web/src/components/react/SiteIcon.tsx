@@ -16,11 +16,18 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
   const px = sizes[size]
   const candidates = iconCandidates(icon, url, px)
   const [idx, setIdx] = useState(0)
+  const [loaded, setLoaded] = useState(false)
   const src = candidates[idx]
+  const initial = siteInitial(name)
 
   useEffect(() => {
     setIdx(0)
+    setLoaded(false)
   }, [icon, url])
+
+  useEffect(() => {
+    setLoaded(false)
+  }, [src])
 
   if (!src || idx >= candidates.length) {
     return (
@@ -28,7 +35,7 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
         className={`${styles.fallback} ${styles[size]} ${className || ''}`}
         aria-hidden
       >
-        {siteInitial(name)}
+        {initial}
       </span>
     )
   }
@@ -37,22 +44,28 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
 
   return (
     <span className={`${styles.wrap} ${styles[size]} ${className || ''}`}>
+      {!loaded ? (
+        <span className={styles.placeholder} aria-hidden>
+          {initial}
+        </span>
+      ) : null}
       <img
         key={src}
         src={src}
         alt=""
         width={px}
         height={px}
-        loading="lazy"
+        loading={size === 'xs' || size === 'sm' ? 'eager' : 'lazy'}
         decoding="async"
         referrerPolicy="no-referrer"
+        className={loaded ? styles.imgReady : styles.imgWait}
         onError={advance}
         onLoad={(e) => {
           if (e.currentTarget.naturalWidth === 0) {
             advance()
             return
           }
-          e.currentTarget.dataset.ok = '1'
+          setLoaded(true)
         }}
       />
     </span>

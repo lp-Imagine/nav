@@ -22,7 +22,8 @@
   border-radius: 6px;
 }
 
-.xs.fallback {
+.xs.fallback,
+.xs .placeholder {
   font-size: 0.65rem;
   border-radius: 6px;
 }
@@ -38,6 +39,7 @@
 }
 
 .wrap {
+  position: relative;
   display: grid;
   place-items: center;
   padding: 5px;
@@ -49,11 +51,30 @@
   max-width: none;
   object-fit: contain;
   display: block;
-  opacity: 0;
+  grid-area: 1 / 1;
 }
 
-.wrap img[data-ok='1'] {
+.imgWait {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.imgReady {
   opacity: 1;
+}
+
+.placeholder {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: var(--teal-deep);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1;
+  user-select: none;
 }
 
 .fallback {
@@ -65,10 +86,12 @@
   font-size: 0.95rem;
 }
 
-.sm.fallback {
+.sm.fallback,
+.sm .placeholder {
   font-size: 0.8rem;
 }
 
-.lg.fallback {
+.lg.fallback,
+.lg .placeholder {
   font-size: 1.1rem;
 }
