@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { iconCandidates, siteInitial } from '../../lib/icon'
 import styles from './SiteIcon.module.css'
 
@@ -12,11 +12,16 @@ interface Props {
 
 const sizes = { xs: 22, sm: 32, md: 40, lg: 48 }
 
+function isImageReady(img: HTMLImageElement) {
+  return img.complete && img.naturalWidth > 0
+}
+
 export default function SiteIcon({ name, icon, url = '', size = 'md', className }: Props) {
   const px = sizes[size]
   const candidates = iconCandidates(icon, url, px)
   const [idx, setIdx] = useState(0)
   const [loaded, setLoaded] = useState(false)
+  const imgRef = useRef<HTMLImageElement | null>(null)
   const src = candidates[idx]
   const initial = siteInitial(name)
 
@@ -29,6 +34,15 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
     setLoaded(false)
   }, [src])
 
+  // 图片已在缓存/SSR 阶段加载完成时，onLoad 不会再触发
+  useEffect(() => {
+    const img = imgRef.current
+    if (!img || !src) return
+    if (!img.complete) return
+    if (img.naturalWidth > 0) setLoaded(true)
+    else setIdx((i) => i + 1)
+  }, [src, idx])
+
   if (!src || idx >= candidates.length) {
     return (
       <span
@@ -40,8 +54,6 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
     )
   }
 
-  const advance = () => setIdx((i) => i + 1)
-
   return (
     <span className={`${styles.wrap} ${styles[size]} ${className || ''}`}>
       {!loaded ? (
@@ -51,6 +63,7 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
       ) : null}
       <img
         key={src}
+        ref={imgRef}
         src={src}
         alt=""
         width={px}
@@ -59,13 +72,10 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
         decoding="async"
         referrerPolicy="no-referrer"
         className={loaded ? styles.imgReady : styles.imgWait}
-        onError={advance}
+        onError={() => setIdx((i) => i + 1)}
         onLoad={(e) => {
-          if (e.currentTarget.naturalWidth === 0) {
-            advance()
-            return
-          }
-          setLoaded(true)
+          if (isImageReady(e.currentTarget)) setLoaded(true)
+          else setIdx((i) => i + 1)
         }}
       />
     </span>
