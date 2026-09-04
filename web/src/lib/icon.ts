@@ -28,6 +28,17 @@ function isOurCdnIcon(url: string): boolean {
   return url.includes('img.penn-notes.draftly.cn/nav/icons/')
 }
 
+function domainFromOurCdn(url: string): string | null {
+  try {
+    const u = new URL(url)
+    if (!/img\.penn-notes\.draftly\.cn$/i.test(u.hostname)) return null
+    const m = u.pathname.match(/\/nav\/icons\/([^/]+)\.(png|ico|jpe?g|gif|webp|svg)$/i)
+    return m ? m[1].toLowerCase() : null
+  } catch {
+    return null
+  }
+}
+
 function domainFromGoogleFavicon(url: string): string | null {
   try {
     const domain = new URL(url).searchParams.get('domain')
@@ -101,14 +112,16 @@ export function iconCandidates(
   if (primary) {
     if (isGoogleFaviconUrl(primary)) {
       domain = domainFromGoogleFavicon(primary)
+    } else if (isOurCdnIcon(primary)) {
+      push(primary)
+      domain = domainFromOurCdn(primary)
     } else {
       push(primary)
-      void isOurCdnIcon(primary)
     }
   }
 
   if (!domain) domain = getDomain(siteUrl)
-  if (!domain && primary) domain = getDomain(primary)
+  if (!domain && primary) domain = domainFromOurCdn(primary) || getDomain(primary)
 
   if (domain) {
     for (const src of faviconSourcesForDomain(domain, size)) push(src)

@@ -43,7 +43,10 @@ npm run icons:migrate
 node scripts/migrate-icons-to-cos.mjs --dry-run        # 不上传、不改 JSON
 node scripts/migrate-icons-to-cos.mjs --download-only  # 只下载到 .cache/icons
 node scripts/migrate-icons-to-cos.mjs --force          # 强制重下/重传
+node scripts/migrate-icons-to-cos.mjs --repair         # 清掉 HTML 伪图标并重下重传
 ```
+
+脚本会校验文件魔数，拒绝把 HTML/脚本当成 favicon 上传。
 
 3. 脚本会：
 

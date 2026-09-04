@@ -94,7 +94,7 @@
                 "desc": "深度求索对话与推理模型，编程与数学表现强",
                 "top": true,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/chat.deepseek.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/chat.deepseek.com.png",
                 "url": "https://chat.deepseek.com/",
                 "urls": {}
               },
@@ -138,7 +138,7 @@
                 "desc": "字节跳动 AI 助手，日常问答、写作与创作",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/doubao.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/doubao.com.png",
                 "url": "https://www.doubao.com/",
                 "urls": {}
               },
@@ -149,7 +149,7 @@
                 "desc": "百度文心大模型，搜索增强的中文助手",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/yiyan.baidu.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/yiyan.baidu.com.png",
                 "url": "https://yiyan.baidu.com/",
                 "urls": {}
               },
@@ -370,7 +370,7 @@
                 "desc": "阿里云 AI 编码助手，补全、问答与单元测试生成",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/lingma.aliyun.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/lingma.aliyun.com.png",
                 "url": "https://lingma.aliyun.com/",
                 "urls": {}
               },
@@ -551,7 +551,7 @@
                 "desc": "剪映即梦，国产图像 / 视频生成",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/jimeng.jianying.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/jimeng.jianying.com.png",
                 "url": "https://jimeng.jianying.com/",
                 "urls": {}
               },
@@ -562,7 +562,6 @@
                 "desc": "阿里云文生图，支持中文场景与设计稿",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/wanxiang.aliyun.com.ico",
                 "url": "https://wanxiang.aliyun.com/",
                 "urls": {}
               },
@@ -874,7 +873,7 @@
                 "desc": "Gemini API 试用与密钥管理",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/aistudio.google.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/aistudio.google.com.png",
                 "url": "https://aistudio.google.com/",
                 "urls": {}
               },
@@ -885,7 +884,7 @@
                 "desc": "字节跳动模型服务，豆包系列 API",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/volcengine.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/volcengine.com.png",
                 "url": "https://www.volcengine.com/product/ark",
                 "urls": {}
               },
@@ -896,7 +895,7 @@
                 "desc": "通义模型与智能体应用平台",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/bailian.console.aliyun.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/bailian.console.aliyun.com.png",
                 "url": "https://bailian.console.aliyun.com/",
                 "urls": {}
               },
@@ -907,7 +906,7 @@
                 "desc": "文心与三方模型的推理、精调平台",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/qianfan.cloud.baidu.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/qianfan.cloud.baidu.com.png",
                 "url": "https://qianfan.cloud.baidu.com/",
                 "urls": {}
               },
@@ -1111,7 +1110,7 @@
                 "desc": "字节智能体平台，插件、工作流与发布渠道齐全",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/coze.cn.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/coze.cn.png",
                 "url": "https://www.coze.cn/",
                 "urls": {}
               }
@@ -1338,7 +1337,7 @@
                 "desc": "RAG、索引、Agent 与数据连接器",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/docs.llamaindex.ai.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/docs.llamaindex.ai.png",
                 "url": "https://docs.llamaindex.ai/",
                 "urls": {}
               },
@@ -1582,7 +1581,7 @@
                 "desc": "中文付费专栏，含大模型应用与 Agent 实战",
                 "top": false,
                 "ownVisible": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/time.geekbang.org.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/time.geekbang.org.jpg",
                 "url": "https://time.geekbang.org/hot/ai",
                 "urls": {}
               },
@@ -2392,7 +2391,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/cn.eslint.org.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/cn.eslint.org.png",
                 "name": "ESLint",
                 "desc": "可组装的JavaScript和JSX检查工具",
                 "url": "https://cn.eslint.org/",
@@ -2456,7 +2455,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/standardjs.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/standardjs.com.png",
                 "name": "standard",
                 "desc": "JavaScript样式指南，带有linter和自动代码修复程序",
                 "url": "https://standardjs.com",
@@ -2532,7 +2531,6 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/antv.alipay.com.ico",
                 "name": "AntV",
                 "desc": "AntV 是蚂蚁金服全新一代数据可视化解决方案",
                 "url": "https://antv.alipay.com/",
@@ -2684,8 +2682,7 @@
                 },
                 "createdAt": "2021-01-23T01:32:06.423Z",
                 "rate": 5,
-                "top": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/git.io.ico"
+                "top": false
               },
               {
                 "name": "html2canvas",
@@ -3088,7 +3085,7 @@
                 "createdAt": "2021-01-23T01:32:06.423Z",
                 "rate": 5,
                 "top": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/animejs.com.ico"
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/animejs.com.png"
               },
               {
                 "name": "Hover-Buttons",
@@ -3193,7 +3190,7 @@
                 "createdAt": "2021-01-23T01:32:06.423Z",
                 "rate": 5,
                 "top": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/fex.baidu.com.ico"
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/fex.baidu.com.png"
               },
               {
                 "name": "pdfmake",
@@ -3390,7 +3387,6 @@
             "title": "UI组件库",
             "nav": [
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/getuikit.net.ico",
                 "name": "uikit",
                 "desc": "一款轻量级、模块化的前端框架可快速构建强大的web前端界面",
                 "url": "http://www.getuikit.net/",
@@ -4257,7 +4253,7 @@
             "title": "开箱即用",
             "nav": [
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/pro.ant.design.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/pro.ant.design.png",
                 "name": "ANT DESIGN PRO",
                 "desc": "开箱即用的中台前端/设计解决方案",
                 "url": "https://pro.ant.design/",
@@ -4452,7 +4448,7 @@
       },
       {
         "title": "Vue.js",
-        "icon": "https://img.penn-notes.draftly.cn/nav/icons/v3.vuejs.org.ico",
+        "icon": "https://img.penn-notes.draftly.cn/nav/icons/v3.vuejs.org.png",
         "nav": [
           {
             "title": "生态系统",
@@ -4582,7 +4578,7 @@
                 "urls": {},
                 "rate": 5,
                 "top": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/composition-api.vuejs.org.ico"
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/composition-api.vuejs.org.png"
               }
             ],
             "createdAt": "2021-01-23T01:32:06.423Z"
@@ -4591,7 +4587,7 @@
             "title": "PC端UI组件库",
             "nav": [
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/iviewui.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/iviewui.com.png",
                 "name": "iView",
                 "desc": "一套基于 Vue.js 的高质量UI 组件库",
                 "url": "https://www.iviewui.com/docs/guide/install",
@@ -4683,7 +4679,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/buefy.org.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/buefy.org.png",
                 "name": "buefy",
                 "desc": "Buefy是一个基于Bulma框架和设计的Vue.js响应式UI组件的轻量级库。",
                 "url": "https://buefy.org",
@@ -4847,7 +4843,7 @@
                 "createdAt": "2021-01-23T01:32:06.423Z",
                 "rate": 5,
                 "top": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/admin.iviewui.com.ico"
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/admin.iviewui.com.png"
               }
             ],
             "createdAt": "2021-01-23T01:32:06.423Z"
@@ -4991,7 +4987,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/vivify.mkcreative.cz.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/vivify.mkcreative.cz.png",
                 "name": "vivify",
                 "desc": "Vivify是免费的CSS动画库。",
                 "url": "http://vivify.mkcreative.cz/",
@@ -5018,7 +5014,7 @@
             "title": "图标库",
             "nav": [
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/iconfont.cn.svg",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/iconfont.cn.png",
                 "name": "iconfont",
                 "desc": "阿里妈妈MUX倾力打造的矢量图标管理、交流平台",
                 "url": "http://www.iconfont.cn/",
@@ -5342,7 +5338,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/caniuse.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/caniuse.com.png",
                 "name": "前端兼容性查询",
                 "desc": "前端查询API各个厂商兼容性情况",
                 "url": "https://www.caniuse.com/",
@@ -5724,7 +5720,7 @@
                 "urls": {},
                 "rate": 5,
                 "top": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/open.weixin.qq.com.ico"
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/open.weixin.qq.com.png"
               }
             ],
             "createdAt": "2021-01-23T01:32:06.423Z"
@@ -6014,7 +6010,7 @@
                 "createdAt": "2021-01-23T01:32:06.423Z",
                 "rate": 5,
                 "top": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/wangdoc.com.ico"
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/wangdoc.com.png"
               }
             ],
             "createdAt": "2021-01-23T01:32:06.423Z"
@@ -6047,8 +6043,7 @@
                 },
                 "createdAt": "2021-01-23T01:32:06.423Z",
                 "rate": 5,
-                "top": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/jsdoc.app.ico"
+                "top": false
               },
               {
                 "icon": "https://avatars3.githubusercontent.com/u/43479428?s=200&v=4",
@@ -7344,7 +7339,6 @@
             "title": "nw.js",
             "nav": [
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/nwjs.io.ico",
                 "name": "nw.js",
                 "desc": "从DOM/WebWorker层,直接调用所有的Node模块，使用现有的web技术，开启一个全新的编写应用的方式",
                 "url": "https://nwjs.io/",
@@ -8021,7 +8015,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/asciiflow.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/asciiflow.com.png",
                 "name": "ASCIIFlow Infinity",
                 "desc": "无限的ASCII图表，保存到谷歌驱动器，调整大小，自由绘制，并直接输出到文本/HTML。",
                 "url": "http://asciiflow.com/",
@@ -8199,7 +8193,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/google.com.png",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/google.com.ico",
                 "name": "Google Workspace",
                 "desc": "Google Workspace状态信息中心",
                 "url": "https://www.google.com/appsstatus#hl=en&v=status",
@@ -8687,7 +8681,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/robomongo.org.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/robomongo.org.jpg",
                 "name": "Robo 3T",
                 "desc": "一个现代，强大且由社区驱动的MongoDB管理工具",
                 "url": "https://robomongo.org/",
@@ -8723,7 +8717,7 @@
             "title": "远程控制",
             "nav": [
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/teamviewer.cn.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/teamviewer.cn.png",
                 "name": "TeamViewer",
                 "desc": "TeamViewer远程连接控制软件是一款随时随地连接到远程桌面电脑、移动设备及Iot,让远程连接过程更加的快速和安全,轻松实现对文件、网络及程序的实时支持或访问。",
                 "url": "https://www.teamviewer.cn/",
@@ -8791,7 +8785,6 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/lanhuapp.com.ico",
                 "name": "蓝湖",
                 "desc": "蓝湖是一款设计图共享平台,帮助互联网团队管理设计图",
                 "url": "https://lanhuapp.com/",
@@ -9057,8 +9050,7 @@
                 "createdAt": "2021-01-23T01:32:06.423Z",
                 "urls": {},
                 "rate": 5,
-                "top": false,
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/wenku.baiduvvv.com.ico"
+                "top": false
               },
               {
                 "icon": "https://img.penn-notes.draftly.cn/nav/icons/tools.bugscaner.com.png",
@@ -9162,7 +9154,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/kanzhun.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/kanzhun.com.jpg",
                 "name": "看准网",
                 "desc": "看准网★中国领先的职场信息平台,专注于公司评论,晒工资,工资待遇,面试,公司福利等.您可以在看准网上匿名分享您的职业信息",
                 "url": "https://www.kanzhun.com",
@@ -9195,7 +9187,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/iqiyi.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/iqiyi.com.png",
                 "name": "爱奇艺",
                 "desc": "拥有海量、优质、高清的网络视频的大型视频网站，专业的网络视频播放平台",
                 "url": "https://www.iqiyi.com/",
@@ -10643,7 +10635,7 @@
             "ownVisible": false
           },
           {
-            "icon": "https://img.penn-notes.draftly.cn/nav/icons/dartpad.dev.ico",
+            "icon": "https://img.penn-notes.draftly.cn/nav/icons/dartpad.dev.png",
             "name": "DartPad",
             "desc": "在线运行Dart语法",
             "url": "https://dartpad.dev/",
@@ -10801,7 +10793,7 @@
         "title": "文档资料",
         "nav": [
           {
-            "icon": "https://img.penn-notes.draftly.cn/nav/icons/material.io.ico",
+            "icon": "https://img.penn-notes.draftly.cn/nav/icons/material.io.png",
             "name": "Material Design",
             "desc": "Material是一个由开源代码支持的设计系统，可以帮助团队构建高质量的数字体验",
             "url": "https://material.io/",
@@ -11344,7 +11336,7 @@
             "icon": "https://img.penn-notes.draftly.cn/nav/icons/github.com.ico"
           },
           {
-            "icon": "https://img.penn-notes.draftly.cn/nav/icons/iconfont.cn.svg",
+            "icon": "https://img.penn-notes.draftly.cn/nav/icons/iconfont.cn.png",
             "name": "iconfont",
             "desc": "阿里妈妈MUX倾力打造的矢量图标管理、交流平台",
             "url": "http://www.iconfont.cn/",
@@ -11465,7 +11457,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/docs.docker.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/docs.docker.com.png",
                 "name": "Docker-Compose",
                 "desc": "使用Docker定义和运行多容器应用程序",
                 "url": "https://docs.docker.com/compose/",
@@ -11553,7 +11545,6 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/tengine.taobao.org.ico",
                 "name": "Nginx开发从入门到精通",
                 "desc": "Nginx开发从入门到精通",
                 "url": "http://tengine.taobao.org/book/index.html",
@@ -11667,7 +11658,6 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/git.io.ico",
                 "name": "linux-command",
                 "desc": "Linux命令大全搜索工具，内容包含Linux命令手册、详解、学习、搜集",
                 "url": "https://git.io/linux",
@@ -11834,7 +11824,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/imooc.com.ico",
+                "icon": "https://img.penn-notes.draftly.cn/nav/icons/imooc.com.png",
                 "name": "慕课网",
                 "desc": "慕课网-程序员的梦工厂",
                 "url": "https://www.imooc.com/",
@@ -11844,7 +11834,6 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/ke.qq.com.ico",
                 "name": "腾讯课堂",
                 "desc": "腾讯课堂 - 专业的在线教育平台",
                 "url": "https://ke.qq.com/index.html",
@@ -11854,7 +11843,7 @@
                 "top": false
               },
               {
-                "icon": "https://img.penn-notes.draftly.cn/nav/icons/ichunqiu.com.png",
+                "icon": "https://static2.ichunqiu.com/icq/resources/images/favicon.ico",
                 "name": "i春秋",
                 "desc": "【i春秋】-专注网络安全_信息安全_白帽子的在线学习_教育_培训平台",
                 "url": "https://www.ichunqiu.com/",
@@ -12070,8 +12059,7 @@
             "createdAt": "2021-01-23T01:32:06.424Z",
             "urls": {},
             "rate": 5,
-            "top": false,
-            "icon": "https://img.penn-notes.draftly.cn/nav/icons/xss.haozi.me.ico"
+            "top": false
           }
         ],
         "createdAt": "2021-01-23T01:32:06.424Z",
@@ -12297,7 +12285,7 @@
             "top": false
           },
           {
-            "icon": "https://img.penn-notes.draftly.cn/nav/icons/google.com.png",
+            "icon": "https://img.penn-notes.draftly.cn/nav/icons/google.com.ico",
             "name": "Google Adsense",
             "desc": "Google Adsense",
             "url": "https://www.google.com/adsense",

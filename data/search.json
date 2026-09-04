@@ -1,7 +1,7 @@
 [
   {
     "name": "站内",
-    "icon": "https://img.penn-notes.draftly.cn/nav/icons/nav3.cn.ico",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/nav3.cn.png",
     "placeholder": "站内搜索",
     "blocked": false
   },
@@ -36,7 +36,7 @@
   {
     "name": "Google",
     "url": "https://www.google.com/search?q=",
-    "icon": "https://img.penn-notes.draftly.cn/nav/icons/google.com.png",
+    "icon": "https://img.penn-notes.draftly.cn/nav/icons/google.com.ico",
     "blocked": false
   },
   {

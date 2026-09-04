@@ -36,6 +36,7 @@ export default function SiteIcon({ name, icon, url = '', size = 'md', className 
   return (
     <span className={`${styles.wrap} ${styles[size]} ${className || ''}`}>
       <img
+        key={src}
         src={src}
         alt=""
         width={px}

@@ -9,6 +9,7 @@
  *      node scripts/migrate-icons-to-cos.mjs --dry-run # 只统计/试下下载
  *      node scripts/migrate-icons-to-cos.mjs --download-only
  *      node scripts/migrate-icons-to-cos.mjs --rewrite-only  # 本地已有 cache 时只改 JSON
+ *      node scripts/migrate-icons-to-cos.mjs --repair        # 清掉 HTML 伪图标并重下重传
  *
  * Env:
  *   COS_SECRET_ID, COS_SECRET_KEY, COS_BUCKET, COS_REGION, COS_CDN_BASE
@@ -34,6 +35,7 @@ const args = new Set(process.argv.slice(2))
 const DRY = args.has('--dry-run')
 const DOWNLOAD_ONLY = args.has('--download-only')
 const REWRITE_ONLY = args.has('--rewrite-only')
+const REPAIR = args.has('--repair')
 const FORCE = args.has('--force')
 const CONCURRENCY = Number(process.env.ICON_CONCURRENCY || 8)
 
@@ -88,6 +90,32 @@ function domainFromGoogleFavicon(icon) {
   }
 }
 
+function domainFromOurCdn(icon) {
+  try {
+    const u = new URL(icon.startsWith('//') ? `https:${icon}` : icon)
+    if (!/img\.penn-notes\.draftly\.cn$/i.test(u.hostname)) return null
+    const m = u.pathname.match(/\/nav\/icons\/([^/]+)\.(png|ico|jpe?g|gif|webp|svg)$/i)
+    return m ? m[1].toLowerCase() : null
+  } catch {
+    return null
+  }
+}
+
+function resolveIconDomain(node) {
+  if (node?.url) {
+    const d = getDomain(node.url)
+    if (d) return d
+  }
+  if (node?.icon) {
+    return (
+      domainFromGoogleFavicon(node.icon) ||
+      domainFromOurCdn(node.icon) ||
+      (isOurCdnIconUrl(node.icon) ? null : getDomain(node.icon))
+    )
+  }
+  return null
+}
+
 function safeKeyDomain(domain) {
   return domain.toLowerCase().replace(/[^a-z0-9.-]/g, '_')
 }
@@ -99,16 +127,12 @@ function collectDomains(db, search) {
   }
   const walk = (nodes) => {
     for (const n of nodes || []) {
-      if (n.url) add(getDomain(n.url))
-      if (n.icon) add(domainFromGoogleFavicon(n.icon) || (n.icon.startsWith('http') ? getDomain(n.icon) : null))
+      add(resolveIconDomain(n))
       if (n.nav) walk(n.nav)
     }
   }
   walk(db)
-  for (const s of search) {
-    if (s.url) add(getDomain(s.url))
-    if (s.icon) add(domainFromGoogleFavicon(s.icon) || getDomain(s.icon))
-  }
+  for (const s of search) add(resolveIconDomain(s))
   return [...domains].sort()
 }
 
@@ -116,13 +140,14 @@ function sourceUrls(domain) {
   return [
     `https://icons.duckduckgo.com/ip3/${domain}.ico`,
     `https://favicon.yandex.net/favicon/v2/${domain}?size=64`,
-    `https://${domain}/favicon.ico`,
     `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`,
+    `https://${domain}/favicon.ico`,
   ]
 }
 
 function extFromContentType(ct, url) {
   const c = (ct || '').toLowerCase()
+  if (c.includes('text/html') || c.includes('application/json') || c.includes('text/plain')) return null
   if (c.includes('png')) return 'png'
   if (c.includes('jpeg') || c.includes('jpg')) return 'jpg'
   if (c.includes('webp')) return 'webp'
@@ -130,7 +155,32 @@ function extFromContentType(ct, url) {
   if (c.includes('svg')) return 'svg'
   if (c.includes('icon')) return 'ico'
   const m = String(url).match(/\.(png|jpe?g|webp|gif|svg|ico)(?:\?|$)/i)
-  return m ? m[1].toLowerCase().replace('jpeg', 'jpg') : 'png'
+  return m ? m[1].toLowerCase().replace('jpeg', 'jpg') : null
+}
+
+/** 用魔数识别真实图片；拒绝 HTML/脚本等伪 favicon */
+function detectImageExt(buf) {
+  if (!buf || buf.length < 12) return null
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47) return 'png'
+  if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return 'jpg'
+  if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46) return 'gif'
+  if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 && buf[8] === 0x57 && buf[9] === 0x45) {
+    return 'webp'
+  }
+  // ICO / CUR
+  if (buf[0] === 0x00 && buf[1] === 0x00 && (buf[2] === 0x01 || buf[2] === 0x02) && buf[3] === 0x00) return 'ico'
+  const head = buf.slice(0, 256).toString('utf8').trimStart()
+  if (head.startsWith('<svg') || (head.startsWith('<?xml') && /<svg[\s>]/i.test(head))) return 'svg'
+  return null
+}
+
+function isValidCachedIcon(filePath) {
+  try {
+    const buf = fs.readFileSync(filePath)
+    return Boolean(detectImageExt(buf))
+  } catch {
+    return false
+  }
 }
 
 async function fetchIcon(domain) {
@@ -140,10 +190,15 @@ async function fetchIcon(domain) {
       const res = await fetch(url, {
         redirect: 'follow',
         signal: AbortSignal.timeout(12000),
-        headers: { 'user-agent': 'penn-nav-icon-migrate/1.0' },
+        headers: { 'user-agent': 'penn-nav-icon-migrate/1.0', accept: 'image/*,*/*;q=0.8' },
       })
       if (!res.ok) {
         errors.push(`${url} → ${res.status}`)
+        continue
+      }
+      const ct = res.headers.get('content-type') || ''
+      if (/text\/html|application\/json|text\/plain/i.test(ct)) {
+        errors.push(`${url} → bad content-type ${ct}`)
         continue
       }
       const buf = Buffer.from(await res.arrayBuffer())
@@ -151,7 +206,14 @@ async function fetchIcon(domain) {
         errors.push(`${url} → bad size ${buf.length}`)
         continue
       }
-      const ext = extFromContentType(res.headers.get('content-type'), url)
+      const magic = detectImageExt(buf)
+      if (!magic) {
+        errors.push(`${url} → not an image`)
+        continue
+      }
+      const hinted = extFromContentType(ct, url)
+      const ext = magic === 'svg' ? 'svg' : magic
+      void hinted
       return { buf, ext, source: url }
     } catch (e) {
       errors.push(`${url} → ${(e && e.message) || e}`)
@@ -208,6 +270,10 @@ function cdnUrlFor(domain, ext) {
   return `${CDN_BASE}/${KEY_PREFIX}/${safeKeyDomain(domain)}.${ext}`
 }
 
+function isOurCdnIconUrl(url) {
+  return typeof url === 'string' && url.includes('img.penn-notes.draftly.cn/nav/icons/')
+}
+
 function rewriteIcons(node, domainToUrl) {
   let changed = 0
   if (Array.isArray(node)) {
@@ -216,18 +282,58 @@ function rewriteIcons(node, domainToUrl) {
   }
   if (!node || typeof node !== 'object') return 0
 
-  let domain = null
-  if (node.url) domain = getDomain(node.url)
-  if (!domain && node.icon) domain = domainFromGoogleFavicon(node.icon) || getDomain(node.icon)
+  const domain = resolveIconDomain(node)
   if (domain && domainToUrl[domain]) {
     const next = domainToUrl[domain]
     if (node.icon !== next) {
       node.icon = next
       changed++
     }
+  } else if (domain && isOurCdnIconUrl(node.icon) && !domainToUrl[domain]) {
+    // 伪图标（HTML）已从映射剔除：清掉 COS 地址，交给前端多源回退
+    delete node.icon
+    changed++
   }
   if (node.nav) changed += rewriteIcons(node.nav, domainToUrl)
   return changed
+}
+
+function purgeInvalidCache(meta, domains) {
+  const purgedDomains = new Set()
+  let purged = 0
+  for (const domain of domains) {
+    const m = meta[domain]
+    if (!m?.ext || m.error) continue
+    const file = path.join(CACHE_DIR, `${safeKeyDomain(domain)}.${m.ext}`)
+    if (isValidCachedIcon(file)) continue
+    try {
+      if (fs.existsSync(file)) fs.unlinkSync(file)
+    } catch {
+      /* ignore */
+    }
+    delete meta[domain]
+    purgedDomains.add(domain)
+    purged++
+    process.stdout.write(`♻ purge invalid cache: ${domain}\n`)
+  }
+  // 扫残留假文件（meta 丢失时）
+  if (fs.existsSync(CACHE_DIR)) {
+    for (const name of fs.readdirSync(CACHE_DIR)) {
+      if (name.startsWith('_') || !/\.(ico|png|jpe?g|gif|webp|svg)$/i.test(name)) continue
+      const file = path.join(CACHE_DIR, name)
+      if (isValidCachedIcon(file)) continue
+      const domainGuess = name.replace(/\.(ico|png|jpe?g|gif|webp|svg)$/i, '')
+      try {
+        fs.unlinkSync(file)
+        purged++
+        if (domainGuess) purgedDomains.add(domainGuess)
+        process.stdout.write(`♻ purge orphan: ${name}\n`)
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+  return { purged, purgedDomains }
 }
 
 async function main() {
@@ -242,8 +348,18 @@ async function main() {
   /** @type {Record<string, { ext: string, source?: string, sha1?: string, key?: string, url?: string, error?: string }>} */
   let meta = fs.existsSync(metaPath) ? JSON.parse(fs.readFileSync(metaPath, 'utf8')) : {}
 
+  const forceUpload = new Set()
+  if (REPAIR && !REWRITE_ONLY) {
+    const { purged, purgedDomains } = purgeInvalidCache(meta, domains)
+    for (const d of purgedDomains) forceUpload.add(d)
+    fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2))
+    console.log(`repair: purged invalid cache entries=${purged}`)
+  }
+
   if (!REWRITE_ONLY) {
-    const todo = FORCE ? domains : domains.filter((d) => !(meta[d] && meta[d].ext && !meta[d].error))
+    const todo = FORCE
+      ? domains
+      : domains.filter((d) => !(meta[d] && meta[d].ext && !meta[d].error))
     console.log(`download: ${todo.length} (skip cached: ${domains.length - todo.length})`)
 
     let ok = 0
@@ -252,9 +368,20 @@ async function main() {
       const got = await fetchIcon(domain)
       if (got.error) {
         fail++
-        meta[domain] = { ...(meta[domain] || {}), error: got.error }
+        meta[domain] = { ...(meta[domain] || {}), error: got.error, ext: undefined, url: undefined, key: undefined }
         process.stdout.write(`✗ ${domain}\n`)
         return
+      }
+      // 清掉同域其它扩展名的旧缓存，避免上传错文件
+      for (const ext of ['ico', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg']) {
+        const old = path.join(CACHE_DIR, `${safeKeyDomain(domain)}.${ext}`)
+        if (ext !== got.ext && fs.existsSync(old)) {
+          try {
+            fs.unlinkSync(old)
+          } catch {
+            /* ignore */
+          }
+        }
       }
       const file = path.join(CACHE_DIR, `${safeKeyDomain(domain)}.${got.ext}`)
       fs.writeFileSync(file, got.buf)
@@ -264,6 +391,7 @@ async function main() {
         sha1: createHash('sha1').update(got.buf).digest('hex'),
         error: undefined,
       }
+      forceUpload.add(domain)
       ok++
       process.stdout.write(`✓ ${domain} (${got.ext}, ${got.buf.length}B)\n`)
     })
@@ -282,7 +410,7 @@ async function main() {
 
   if (!cosConfigured()) {
     throw new Error(
-      '缺少 COS 环境变量。请在 nav/.env 配置 COS_SECRET_ID / COS_SECRET_KEY（可选 COS_BUCKET/COS_REGION/COS_CDN_BASE）',
+      '缺少 COS 环境变量。请在 nav/.env 或 server/.env 配置 COS_SECRET_ID / COS_SECRET_KEY（可选 COS_BUCKET/COS_REGION/COS_CDN_BASE）',
     )
   }
 
@@ -294,9 +422,14 @@ async function main() {
     if (!m?.ext || m.error) continue
     const local = path.join(CACHE_DIR, `${safeKeyDomain(domain)}.${m.ext}`)
     if (!fs.existsSync(local)) continue
+    if (!isValidCachedIcon(local)) {
+      process.stdout.write(`skip invalid local: ${domain}\n`)
+      continue
+    }
     const key = `${KEY_PREFIX}/${safeKeyDomain(domain)}.${m.ext}`
     const url = `${CDN_BASE}/${key}`
-    if (!FORCE) {
+    const mustUpload = FORCE || forceUpload.has(domain)
+    if (!mustUpload) {
       try {
         await call('headObject', { Key: key })
         m.key = key
@@ -324,8 +457,11 @@ async function main() {
 
   const domainToUrl = {}
   for (const [domain, m] of Object.entries(meta)) {
+    if (m.error || !m.ext) continue
+    const local = path.join(CACHE_DIR, `${safeKeyDomain(domain)}.${m.ext}`)
+    if (!isValidCachedIcon(local) && !m.url) continue
     if (m.url) domainToUrl[domain] = m.url
-    else if (m.ext) domainToUrl[domain] = cdnUrlFor(domain, m.ext)
+    else domainToUrl[domain] = cdnUrlFor(domain, m.ext)
   }
 
   const dbChanged = rewriteIcons(db, domainToUrl)
@@ -345,6 +481,7 @@ async function main() {
         dbChanged,
         searchChanged,
         mapped: Object.keys(domainToUrl).length,
+        repair: REPAIR,
       },
       null,
       2,
