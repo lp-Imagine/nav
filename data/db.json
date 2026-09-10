@@ -11363,16 +11363,6 @@
         "title": "工具",
         "nav": [
           {
-            "icon": "https://img.penn-notes.draftly.cn/nav/icons/chuangkit.com.ico",
-            "name": "创客贴",
-            "desc": "一款简单易用、功能强大的线上图形设计工具",
-            "url": "https://www.chuangkit.com/",
-            "createdAt": "2021-01-23T01:32:06.424Z",
-            "urls": {},
-            "rate": 5,
-            "top": false
-          },
-          {
             "name": "Ps Play",
             "desc": "Ps Play - 移动设计零阻力",
             "url": "https://isux.tencent.com/resources/psplay/",
